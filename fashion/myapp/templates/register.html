@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+{% block title %}E Store - Register{% endblock %}
+
+{% block extra_head %}
+<style>
+  /* Mobile-specific styles for the registration page */
+  @media (max-width: 767px) {
+    .register {
+      padding: 20px 10px;
+    }
+    .register-form {
+      padding: 15px;
+    }
+    .register-form label {
+      font-size: 14px;
+    }
+    .register-form .form-control {
+      padding: 10px;
+      font-size: 14px;
+    }
+    .register-form button.btn {
+      font-size: 16px;
+      padding: 10px 15px;
+      margin-top: 15px;
+    }
+  }
+</style>
+{% endblock extra_head %}
+
+{% block content %}
+<!-- Breadcrumb Start -->
+{% include 'breadcrumb.html' %}
+<!-- Breadcrumb End -->
+
+<!-- Registration Form Start -->
+<div class="register p-4">
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <div class="register-form">
+                    <form method="POST" action="{% url 'myapp:register' %}">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <label>First Name</label>
+                                {{ form.first_name|add_class:"form-control p-3 rounded mb-3" }}
+                                {% for error in form.first_name.errors %}
+                                {% endfor %}
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label>Last Name</label>
+                                {{ form.last_name|add_class:"form-control p-3 rounded mb-3" }}
+                                {% for error in form.last_name.errors %}
+                                {% endfor %}
+                            </div>
+                            <!-- Username Field -->
+                            <div class="col-md-12 form-group">
+                                <label>Username</label>
+                                {{ form.username|add_class:"form-control p-3 rounded mb-3" }}
+                                {% for error in form.username.errors %}
+                                    <div class="error">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label>E-mail</label>
+                                {{ form.email|add_class:"form-control p-3 rounded mb-3" }}
+                                {% for error in form.email.errors %}
+                                {% endfor %}
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label>Mobile No</label>
+                                {{ form.mobile|add_class:"form-control p-3 rounded mb-3" }}
+                                {% for error in form.mobile.errors %}
+                                {% endfor %}
+                            </div>
+                            <!-- Password Field with Toggle -->
+                            <div class="col-md-6 form-group position-relative">
+                                <label>Password</label>
+                                {{ form.password1|add_class:"form-control p-3 rounded mb-3" }}
+                                <span toggle="#{{ form.password1.id_for_label }}" class="fa fa-eye field-icon toggle-password"></span>
+                                {% for error in form.password1.errors %}
+                                {% endfor %}
+                            </div>
+                            <!-- Retype Password Field with Toggle -->
+                            <div class="col-md-6 form-group position-relative">
+                                <label>Retype Password</label>
+                                {{ form.password2|add_class:"form-control p-3 rounded mb-3" }}
+                                <span toggle="#{{ form.password2.id_for_label }}" class="fa fa-eye field-icon toggle-password"></span>
+                                {% for error in form.password2.errors %}
+                                {% endfor %}
+                            </div>
+                            <div class="col-md-12">
+                                <button class="btn btn-primary mt-3" type="submit">Submit</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Registration Form End -->
+{% endblock content %}
+
+<!-- Toggle Password Visibility Script -->
+{% block extra_js %}
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const togglePasswordIcons = document.querySelectorAll(".toggle-password");
+    togglePasswordIcons.forEach(function(icon) {
+        icon.addEventListener("click", function() {
+            const input = document.querySelector(icon.getAttribute("toggle"));
+            if (input.getAttribute("type") === "password") {
+                input.setAttribute("type", "text");
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                input.setAttribute("type", "password");
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
+        });
+    });
+});
+</script>
+{% endblock extra_js %}

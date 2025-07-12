@@ -1,0 +1,252 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}E Store - my account{% endblock %}
+
+{% block extra_head %}
+<style>
+  /* Mobile-specific styles for product list page */
+  @media (max-width: 767px) {
+    /* Reduce font sizes and padding for list items */
+    .list-group-item {
+      font-size: 14px;
+      padding: 8px 10px;
+    }
+    /* Adjust image sizes in sidebar and product items */
+    .list-group-item img,
+    .product-item img {
+        display: block;
+        margin: 0 auto;
+    }
+    /* Adjust pagination links */
+    .pagination .page-link {
+      font-size: 14px;
+      padding: 6px 10px;
+    }
+    /* Adjust sidebar nav links */
+    .navbar-nav .nav-link {
+      font-size: 14px;
+      padding: 6px 8px;
+    }
+    /* Reduce spacing in product item title and price */
+    .product-title a,
+    .product-price h3 {
+      font-size: 14px;
+    }
+  }
+</style>
+{% endblock extra_head %}
+
+{% block content %}
+<div class="container my-4">
+  <h2 class="mb-4">Product List</h2>
+
+  <!-- Main Product List -->
+  <div class="row">
+    <div class="col-lg-8">
+      <div class="row">
+        <!-- Product View Top -->
+        <div class="col-md-12">
+            <div class="product-view-top">
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="product-short">
+                    <div class="dropdown">
+                      <div class="dropdown-toggle" data-toggle="dropdown">Product short by</div>
+                      <div class="dropdown-menu dropdown-menu-right">
+                        {% for min_val, max_val in price_ranges %}
+                          <a
+                            href="?min={{ min_val }}&max={{ max_val }}"
+                            class="dropdown-item"
+                          >
+                            ₦{{ min_val }} to ₦{{ max_val }}
+                          </a>
+                        {% endfor %}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- Optionally add another column if needed -->
+              </div>
+            </div>
+          </div>
+          
+        
+        <!-- Dynamic Product Items -->
+        {% for product in products %}
+          <div class="col-md-4">
+            <div class="product-item">
+              <div class="product-title">
+                <a href="{% url 'myapp:product_detail' product.id %}">{{ product.name }}</a>
+                <div class="ratting">
+                  {% for star in "12345"|make_list %}
+                    <i class="fa fa-star"></i>
+                  {% endfor %}
+                </div>
+                <div class="product-category">
+                  <small>Category: <strong>{{ product.category.name }}</strong></small>
+                </div>
+              </div>
+              <div class="product-image">
+                <a href="{% url 'myapp:product_detail' product.id %}">
+                  {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                  {% else %}
+                    <img src="{% static 'img/default-product.jpg' %}" alt="Default Product">
+                  {% endif %}
+                </a>
+                <div class="product-action">
+                  <!-- Additional actions like wishlist or view details can go here -->
+                  <a href="#"><i class="fa fa-heart"></i></a>
+                  <a href="#"><i class="fa fa-search"></i></a>
+                </div>
+              </div>
+              <div class="product-price">
+                <h3><span>₦</span>{{ product.price }}</h3>
+                <!-- Add to Cart button linking to persistent cart logic -->
+                <a class="btn" href="{% url 'myapp:add_to_cart' product.id %}">
+                  <i class="fa fa-shopping-cart"></i> Add to Cart
+                </a>
+              </div>
+            </div>
+          </div>
+        {% empty %}
+          <p>No products available.</p>
+        {% endfor %}
+        
+        <!-- Pagination Start -->
+        <div class="col-md-12">
+          {% if page_obj.has_other_pages %}
+            <nav aria-label="Page navigation">
+              <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                  <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}" tabindex="-1">Previous</a>
+                  </li>
+                {% else %}
+                  <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1">Previous</a>
+                  </li>
+                {% endif %}
+                
+                {% for num in page_obj.paginator.page_range %}
+                  {% if page_obj.number == num %}
+                    <li class="page-item active">
+                      <a class="page-link" href="?page={{ num }}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}">{{ num }}</a>
+                    </li>
+                  {% else %}
+                    <li class="page-item">
+                      <a class="page-link" href="?page={{ num }}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}">{{ num }}</a>
+                    </li>
+                  {% endif %}
+                {% endfor %}
+                
+                {% if page_obj.has_next %}
+                  <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}">Next</a>
+                  </li>
+                {% else %}
+                  <li class="page-item disabled">
+                    <a class="page-link" href="#">Next</a>
+                  </li>
+                {% endif %}
+              </ul>
+            </nav>
+          {% endif %}
+        </div>
+        <!-- Pagination End -->
+      </div>
+    </div>
+    
+    <!-- Side Bar Start -->
+    <div class="col-lg-4 sidebar">
+      <div class="sidebar-widget category">
+        <h2 class="title">Category</h2>
+        <nav class="navbar bg-light">
+          <ul class="navbar-nav">
+            {% for category in categories %}
+              <li class="nav-item">
+                <a class="nav-link" href="?category={{ category.slug }}">
+                  <i class="fa fa-folder"></i> {{ category.name }}
+                </a>
+              </li>
+            {% empty %}
+              <li class="nav-item"><span>No categories found.</span></li>
+            {% endfor %}
+          </ul>
+        </nav>
+      </div>
+      
+      <div class="sidebar-widget widget-slider">
+        <div class="sidebar-slider normal-slider">
+          {% for slider_product in slider_products %}
+            <div class="product-item">
+              <div class="product-title">
+                <a href="{% url 'myapp:product_detail' slider_product.id %}">{{ slider_product.name }}</a>
+                <div class="ratting">
+                  {% for star in "12345"|make_list %}
+                    <i class="fa fa-star"></i>
+                  {% endfor %}
+                </div>
+              </div>
+              <div class="product-image">
+                <a href="{% url 'myapp:product_detail' slider_product.id %}">
+                  {% if slider_product.image %}
+                    <img src="{{ slider_product.image.url }}" alt="{{ slider_product.name }}">
+                  {% else %}
+                    <img src="{% static 'img/default-product.jpg' %}" alt="Default Product">
+                  {% endif %}
+                </a>
+                <div class="product-action">
+                  <a href="#"><i class="fa fa-cart-plus"></i></a>
+                  <a href="#"><i class="fa fa-heart"></i></a>
+                  <a href="#"><i class="fa fa-search"></i></a>
+                </div>
+              </div>
+              <div class="product-price">
+                <h3><span>₦</span>{{ slider_product.price }}</h3>
+                <a class="btn" href="{% url 'myapp:add_to_cart' slider_product.id %}">
+                  <i class="fa fa-shopping-cart"></i> Add to Cart
+                </a>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+      
+      <!-- Sidebar widget for brands -->
+<div class="sidebar-widget brands">
+    <h2 class="title">Our Brands</h2>
+    <ul>
+      {% for brand in brands %}
+        <li>
+          <a href="{% url 'myapp:products' %}?brand={{ brand.id }}">{{ brand.name }}</a>
+        </li>
+      {% empty %}
+        <li>No brands available.</li>
+      {% endfor %}
+    </ul>
+  </div>
+  
+  
+    </div>
+    <!-- End Side Bar -->
+  </div>
+</div>
+<!-- Product List End -->  
+
+<!-- Brand Start -->
+<div class="brand">
+  <div class="container-fluid">
+    <div class="brand-slider">
+      <div class="brand-item"><img src="{% static 'img/brand-1.png' %}" alt=""></div>
+      <div class="brand-item"><img src="{% static 'img/brand-2.png' %}" alt=""></div>
+      <div class="brand-item"><img src="{% static 'img/brand-3.png' %}" alt=""></div>
+      <div class="brand-item"><img src="{% static 'img/brand-4.png' %}" alt=""></div>
+      <div class="brand-item"><img src="{% static 'img/brand-5.png' %}" alt=""></div>
+      <div class="brand-item"><img src="{% static 'img/brand-6.png' %}" alt=""></div>
+    </div>
+  </div>
+</div>
+<!-- Brand End -->
+
+{% endblock %}

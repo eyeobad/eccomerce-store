@@ -1,0 +1,210 @@
+{% extends "base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}E Store - Checkout{% endblock %}
+
+{% block extra_head %}
+<style>
+  /* Mobile-specific styling for checkout page */
+  @media (max-width: 767px) {
+    /* Adjust overall padding and font sizes */
+    body, h1, h2, h3, h4, h5, h6, p, label {
+      font-size: 14px;
+    }
+    .checkout-inner {
+      padding: 10px;
+    }
+    /* Form controls */
+    .form-control, .custom-select {
+      padding: 8px;
+      font-size: 14px;
+    }
+    /* Buttons */
+    .btn {
+      padding: 10px 15px;
+      font-size: 16px;
+    }
+    /* Billing address row spacing */
+    .billing-address .row > div {
+      margin-bottom: 8px;
+    }
+    /* Cart summary adjustments */
+    .checkout-summary h1, .checkout-summary h2 {
+      font-size: 18px;
+    }
+    .checkout-summary p {
+      font-size: 14px;
+    }
+    .checkout-summary span {
+      font-size: 16px;
+    }
+  }
+</style>
+{% endblock extra_head %}
+
+{% block content %}
+    <!-- Breadcrumb Start -->
+    {% include 'breadcrumb.html' %}
+    <!-- Breadcrumb End -->
+
+    <form method="post" action="{% url 'myapp:checkout' %}">
+        {% csrf_token %}
+        <div class="row">
+            <!-- Billing Address Section -->
+            <div class="col-lg-8">
+                <div class="checkout-inner">
+                    <div class="billing-address">
+                        <h2>Billing Address</h2>
+                        <div class="row">
+                            <!-- Address Field -->
+                            <div class="col-md-12">
+                                <label for="{{ address_form.address.id_for_label }}">Address</label>
+                                {% render_field address_form.address class="form-control" placeholder="Address" %}
+                                {% if address_form.address.errors %}
+                                    {% for error in address_form.address.errors %}
+                                        <div class="invalid-feedback d-block">{{ error }}</div>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                            <!-- Country Field -->
+                            <div class="col-md-6">
+                                <label for="{{ address_form.country.id_for_label }}">Country</label>
+                                <select class="custom-select" name="{{ address_form.country.name }}" id="{{ address_form.country.id_for_label }}">
+                                    {% for code, name in countries %}
+                                        <option value="{{ code }}" {% if address_form.country.value|stringformat:"s" == code|stringformat:"s" %}selected{% endif %}>
+                                            {{ name }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                                {% if address_form.country.errors %}
+                                    {% for error in address_form.country.errors %}
+                                        <div class="invalid-feedback d-block">{{ error }}</div>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                            <!-- City Field -->
+                            <div class="col-md-6">
+                                <label for="{{ address_form.city.id_for_label }}">City</label>
+                                {% render_field address_form.city class="form-control" placeholder="City" %}
+                                {% if address_form.city.errors %}
+                                    {% for error in address_form.city.errors %}
+                                        <div class="invalid-feedback d-block">{{ error }}</div>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                            <!-- State Field -->
+                            <div class="col-md-6">
+                                <label for="{{ address_form.state.id_for_label }}">State</label>
+                                {% render_field address_form.state class="form-control" placeholder="State" %}
+                                {% if address_form.state.errors %}
+                                    {% for error in address_form.state.errors %}
+                                        <div class="invalid-feedback d-block">{{ error }}</div>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                            <!-- ZIP Code Field -->
+                            <div class="col-md-6">
+                                <label for="{{ address_form.zip_code.id_for_label }}">ZIP Code</label>
+                                {% render_field address_form.zip_code class="form-control" placeholder="ZIP Code" %}
+                                {% if address_form.zip_code.errors %}
+                                    {% for error in address_form.zip_code.errors %}
+                                        <div class="invalid-feedback d-block">{{ error }}</div>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <!-- (Optional) Additional shipping address fields can be added here -->
+                </div>
+            </div>
+            
+            <!-- Checkout Summary & Payment Section -->
+            <div class="col-lg-4">
+                <div class="checkout-inner">
+                    <div class="checkout-summary">
+                        <h1>Cart Total</h1>
+                        {% for item in cart_items %}
+                            <p>
+                                {{ item.product.name }} (x{{ item.quantity }})
+                                <span>&#8358;{{ item.total }}</span>
+                            </p>
+                        {% endfor %}
+                        <p class="sub-total">
+                            Sub Total
+                            <span>&#8358;{{ cart_subtotal }}</span>
+                        </p>
+                        {% if discount > 0 %}
+                        <p class="discount">
+                            Discount
+                            <span>-&#8358;{{ discount }}</span>
+                        </p>
+                        {% endif %}
+                        <p class="ship-cost">
+                            Shipping Cost
+                            <span>&#8358;{{ shipping_cost }}</span>
+                        </p>
+                        <h2>
+                            Grand Total
+                            <span>&#8358;{{ grand_total }}</span>
+                        </h2>
+                    </div>
+
+                    <div class="checkout-payment">
+                        <div class="payment-methods">
+                            <h1>Payment Method</h1>
+                            <!-- Payment Method Option: Flutterwave -->
+                            <div class="payment-method">
+                                <div class="custom-control custom-radio">
+                                    <input type="radio" class="custom-control-input"
+                                           id="payment-flutterwave" name="payment" value="flutterwave" checked>
+                                    <label class="custom-control-label" for="payment-flutterwave">Flutterwave</label>
+                                </div>
+                                <div class="payment-content" id="payment-flutterwave-show">
+                                    <p>Pay securely via Flutterwave.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="checkout-btn">
+                            <!-- Clicking this button triggers the Flutterwave Checkout JS -->
+                            <button type="button" onclick="makePayment()" class="btn">Place Order</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <!-- Flutterwave Checkout Script -->
+    <script src="https://checkout.flutterwave.com/v3.js"></script>
+    <script>
+        // Use grand_total and cart_id from the context passed by Django
+        let cart_total = "{{ grand_total }}";
+        let cart_id = "{{ cart.id }}";
+
+        function makePayment() {
+            FlutterwaveCheckout({
+                public_key: "FLWPUBK_TEST-10ff25aa85156ccae955afbb08b5296e-X", // Replace with your actual public key
+                tx_ref: "titanic-{{ cart_id }}",  // Unique transaction reference
+                amount: cart_total,
+                currency: "NGN",
+                payment_options: "card, banktransfer, ussd",
+                redirect_url: "https://{{ request.get_host }}/confirm_payment/" + cart_id,
+                meta: {
+                    consumer_id: {{ request.user.id }},
+                    consumer_mac: "92a3-912ba-1192a",
+                },
+                customer: {
+                    email: "{{ request.user.email }}",
+                    phone_number: "{{ request.user.mobile }}",  // Extracted from CustomUser model
+                    name: "{{ request.user.username }}",
+                },
+                customizations: {
+                    title: "E Store",
+                    description: "Buy with ease",
+                    logo: "{% static 'css/img/logo.png' %}",  // Adjust to your logo's path
+                },
+            });
+        }
+    </script>
+{% endblock content %}

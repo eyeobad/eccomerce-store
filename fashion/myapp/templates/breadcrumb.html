@@ -1,0 +1,35 @@
+{% load static %}
+<style>
+  .breadcrumb-wrap {
+    background-color: #f8f9fa;
+    padding: 15px 0;
+  }
+  .breadcrumb {
+    margin-bottom: 0;
+    background: none;
+    padding: 0;
+  }
+  .breadcrumb a {
+    color: #007bff;
+    text-decoration: none;
+  }
+  .breadcrumb a:hover {
+    text-decoration: underline;
+  }
+  @media (max-width: 767px) {
+    .breadcrumb {
+      font-size: 14px;
+    }
+  }
+</style>
+<!-- Breadcrumb Start -->
+<div class="breadcrumb-wrap">
+    <div class="container-fluid">
+        <ul class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'myapp:home' %}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'myapp:products' %}">Products</a></li>
+            
+        </ul>
+    </div>
+</div>
+<!-- Breadcrumb End -->

@@ -1,0 +1,33 @@
+/* my_custom_admin.css */
+
+/* Change the header background and text colors */
+.navbar, .main-header {
+    background-color: #FF6F61 !important;  /* primary color */
+    color: #000000 !important;             /* white text */
+}
+
+/* Sidebar styling */
+.sidebar, .nav-sidebar {
+    background-color: #FF6F61 !important;
+}
+
+/* Primary button styling */
+.btn-primary {
+    background-color: #FF6F61 !important;
+    border-color: #FF6F61 !important;
+}
+
+/* Navigation link styling */
+.nav-link{
+    color: #000000 !important;
+}
+.nav-header{
+    color: #FFFFFF !important;
+}
+
+/* Optionally, adjust links and hover states */
+a, a:hover, a:focus {
+    color: #808080 !important;
+}
+
+/* You can add more custom rules as needed */

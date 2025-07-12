@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Staff Dashboard{% endblock title %}
+
+{% block extra_head %}
+<style>
+  /* Mobile-specific styling for Staff Dashboard */
+  @media (max-width: 767px) {
+    .container.my-4 h1 {
+      font-size: 22px;
+      margin-bottom: 20px;
+    }
+    .card {
+      margin-bottom: 15px;
+      /* Reduce padding within cards */
+      padding: 10px;
+    }
+    .card-body {
+      padding: 10px;
+    }
+    .card-title {
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+    .card-text {
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+    .btn {
+      padding: 8px 12px;
+      font-size: 14px;
+    }
+  }
+</style>
+{% endblock extra_head %}
+
+{% block content %}
+<div class="container my-4">
+    <h1 class="mb-4">Staff Dashboard</h1>
+    <div class="row">
+        <!-- Users Card -->
+        <div class="col-md-4 mb-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Users</h5>
+                    <p class="card-text">{{ user_count }} Users</p>
+                    <a href="{% url 'admin:myapp_customuser_changelist' %}" class="btn btn-primary">Manage Users</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Orders Card -->
+        <div class="col-md-4 mb-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Orders</h5>
+                    <p class="card-text">{{ order_count }} Orders</p>
+                    <a href="{% url 'admin:myapp_order_changelist' %}" class="btn btn-primary">Manage Orders</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Products Card -->
+        <div class="col-md-4 mb-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Products</h5>
+                    <p class="card-text">{{ product_count }} Products</p>
+                    <a href="{% url 'admin:myapp_product_changelist' %}" class="btn btn-primary">Manage Products</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Categories Card -->
+        <div class="col-md-4 mb-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Categories</h5>
+                    <p class="card-text">{{ category_count }} Categories</p>
+                    <a href="{% url 'admin:myapp_category_changelist' %}" class="btn btn-primary">Manage Categories</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Brands Card -->
+        <div class="col-md-4 mb-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Brands</h5>
+                    <p class="card-text">{{ brand_count }} Brands</p>
+                    <a href="{% url 'admin:myapp_brand_changelist' %}" class="btn btn-primary">Manage Brands</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slider Images Card -->
+        <div class="col-md-4 mb-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Slider Images</h5>
+                    <p class="card-text">{{ slider_count }} Slider Images</p>
+                    <a href="{% url 'admin:myapp_sliderimage_changelist' %}" class="btn btn-primary">Manage Sliders</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,113 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}SHOP.CO{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="icon" href="{% static 'img/favicon.ico' %}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"/>
+
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css" />
+
+    <style>
+      /* --- Global Styles & Variables --- */
+      :root {
+        --background-color: #FFFFFF;
+        --text-primary: #000000;
+        --text-secondary: rgba(0, 0, 0, 0.6);
+        --border-color: rgba(0, 0, 0, 0.1);
+        --accent-color: #000000;
+      }
+
+      body {
+        background-color: var(--background-color);
+        color: var(--text-primary);
+        font-family: 'Poppins', sans-serif;
+        font-size: 16px;
+      }
+
+      h1, h2, h3, h4, h5, h6 {
+        font-weight: 700;
+        color: var(--text-primary);
+      }
+
+      a {
+        color: var(--text-primary);
+        transition: color 0.3s;
+      }
+      a:hover {
+        color: var(--text-secondary);
+        text-decoration: none;
+      }
+      
+      .section-header {
+        text-align: center;
+        margin-bottom: 50px;
+      }
+      .section-header h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        text-transform: uppercase;
+      }
+
+      .container-fluid {
+          padding-left: 6%;
+          padding-right: 6%;
+      }
+
+      /* --- Responsive --- */
+      @media (max-width: 767px) {
+        body { font-size: 14px; }
+        .section-header h1 { font-size: 2rem; }
+      }
+    </style>
+
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    
+    {% include 'navbar.html' %}
+    
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    {% include 'footer.html' %}
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.js"></script>
+    
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+      AOS.init({
+        duration: 800,
+        once: true,
+      });
+
+      // Script for top banner close button
+      document.addEventListener("DOMContentLoaded", function() {
+        const closeBannerBtn = document.getElementById('close-top-banner');
+        if(closeBannerBtn) {
+          closeBannerBtn.addEventListener('click', function() {
+            document.getElementById('top-banner').style.display = 'none';
+          });
+        }
+      });
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+
+</body>
+</html>

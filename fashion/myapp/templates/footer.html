@@ -1,0 +1,103 @@
+{% load static %}
+
+{% block extra_head %}
+<style>
+  .site-footer {
+    padding: 60px 0 20px;
+    background-color: #f2f0f1;
+    font-size: 0.9rem;
+  }
+  .site-footer a {
+      color: var(--text-secondary);
+  }
+  .site-footer h2 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+  }
+  .site-footer ul {
+      list-style: none;
+      padding: 0;
+  }
+  .site-footer ul li {
+      margin-bottom: 10px;
+  }
+  .footer-social a {
+      font-size: 1.5rem;
+      margin-right: 15px;
+  }
+  .footer-bottom {
+    padding-top: 30px;
+    margin-top: 40px;
+    border-top: 1px solid var(--border-color);
+  }
+  .footer-bottom p {
+      color: var(--text-secondary);
+      margin: 0;
+  }
+  .payment-methods img {
+      height: 24px;
+      margin-left: 10px;
+  }
+</style>
+{% endblock %}
+
+<footer class="site-footer">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-3">
+                <h2>Se_un</h2>
+                <p class="text-secondary">We have clothes that empower your style and celebrate your individuality. Find your perfect fit with us.</p>
+                <div class="footer-social">
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-3 col-6">
+                <h2>Company</h2>
+                <ul>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Features</a></li>
+                    <li><a href="#">Works</a></li>
+                    <li><a href="#">Career</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-2 col-md-3 col-6">
+                <h2>Help</h2>
+                <ul>
+                    <li><a href="#">Customer Support</a></li>
+                    <li><a href="#">Delivery Details</a></li>
+                    <li><a href="#">Terms & Conditions</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-2 col-md-3 col-6">
+                <h2>FAQ</h2>
+                <ul>
+                    <li><a href="#">Account</a></li>
+                    <li><a href="#">Manage Deliveries</a></li>
+                    <li><a href="#">Orders</a></li>
+                    <li><a href="#">Payments</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-2 col-md-3 col-6">
+                <h2>Resources</h2>
+                <ul>
+                    <li><a href="#">Free eBooks</a></li>
+                    <li><a href="#">Development Tutorial</a></li>
+                    <li><a href="#">How to - Blog</a></li>
+                    <li><a href="#">Youtube Playlist</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom d-flex justify-content-between align-items-center flex-wrap">
+            <p>Se_un © {% now "Y" %}, All Rights Reserved</p>
+            <div class="payment-methods">
+                <img src="{% static 'img/visa.webp' %}" alt="Visa">
+                
+            </div>
+        </div>
+    </div>
+</footer>
