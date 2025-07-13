@@ -21,21 +21,22 @@ class CustomUserCreationForm(UserCreationForm):
             'mobile',
             'password1',
             'password2',
+            'address',  # Assuming address is a field in CustomUser
+            'city',     # Assuming city is a field in CustomUser
         ]
 
+
 class ProfileUpdateForm(forms.ModelForm):
-    """
-    Updates user profile basic details (excluding address fields).
-    """
     class Meta:
-        model = User
+        model = CustomUser
+  
         fields = [
             'first_name', 
             'last_name', 
-            'email', 
-            'mobile'
+            'email',
+            'mobile',           # Correct field name
+            
         ]
-
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
@@ -47,7 +48,7 @@ class AddressForm(forms.ModelForm):
     """
     class Meta:
         model = CustomUser
-        fields = ['address', 'city', 'state', 'country', 'zip_code']
+        fields = ['address', 'city', 'state', 'country', 'zip_code','first_name', 'last_name', ]
 
 class ReviewForm(forms.ModelForm):
     class Meta:

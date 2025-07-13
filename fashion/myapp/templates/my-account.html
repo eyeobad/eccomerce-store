@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 {% load widget_tweaks %}
+
 {% block title %}My Account - Se_un{% endblock %}
 
 {% block extra_head %}
@@ -10,7 +11,7 @@
         --card-radius: 20px;
         --light-grey: #f7f7f7;
         --border-color: #f0f0f0;
-        --primary-accent: #000; /* Use black as the primary accent */
+        --primary-accent: #000;
     }
     .account-page {
         background-color: var(--light-grey);
@@ -22,6 +23,7 @@
         background-color: var(--card-bg);
         padding: 20px;
         border-radius: var(--card-radius);
+        box-shadow: 0 4px 25px rgba(0,0,0,0.05);
     }
     .account-nav .nav-link {
         padding: 15px 20px;
@@ -47,6 +49,7 @@
         background-color: var(--card-bg);
         padding: 40px;
         border-radius: var(--card-radius);
+        box-shadow: 0 4px 25px rgba(0,0,0,0.05);
     }
     .account-content-card h4 {
         font-weight: 700;
@@ -55,17 +58,19 @@
     }
     .account-content-card .form-group {
         margin-bottom: 20px;
-       position: relative;
-        z-index: 1;
     }
     .account-content-card label {
         font-weight: 600;
+        font-size: 0.9rem;
         margin-bottom: 8px;
     }
-    .account-content-card .form-control {
+    .account-content-card .form-control,
+    .account-content-card .custom-select {
         border-radius: 8px;
         border: 1px solid #ddd;
-        padding: 20px 15px;
+        padding: 12px 15px;
+        background-color: var(--light-grey);
+        height: 50px;
     }
     .account-content-card .form-control:focus {
         border-color: var(--primary-accent);
@@ -74,6 +79,7 @@
     .btn-save {
         background-color: var(--primary-accent);
         color: #fff;
+        border: none;
         border-radius: 8px;
         padding: 12px 30px;
         font-weight: 600;
@@ -87,7 +93,20 @@
     /* Order History Table */
     .orders-table th {
         background-color: var(--light-grey);
+        border: none;
     }
+    .orders-table td {
+        vertical-align: middle;
+    }
+    .badge-status {
+        font-size: 0.8rem;
+        font-weight: 600;
+        padding: 6px 12px;
+    }
+    .badge-status.paid { background-color: #28a74520; color: #218838; }
+    .badge-status.pending { background-color: #ffc10720; color: #d39e00; }
+    .badge-status.shipped { background-color: #17a2b820; color: #138496; }
+
 </style>
 {% endblock extra_head %}
 
@@ -95,7 +114,7 @@
 <div class="account-page">
     <div class="container">
         <div class="row">
-            <div class="col-lg-4">
+            <div class="col-lg-4 mb-4 mb-lg-0">
                 <div class="account-nav nav flex-column nav-pills" role="tablist" aria-orientation="vertical">
                     <a class="nav-link active" id="dashboard-nav" data-toggle="pill" href="#dashboard-tab" role="tab"><i class="fas fa-th-large"></i> Dashboard</a>
                     <a class="nav-link" id="orders-nav" data-toggle="pill" href="#orders-tab" role="tab"><i class="fas fa-box"></i> Orders</a>
@@ -111,7 +130,7 @@
                         <div class="account-content-card">
                             <h4>Dashboard</h4>
                             <p>Hello, <strong>{{ user.first_name|default:user.username }}</strong>!</p>
-                            <p>From your account dashboard you can view your recent orders, manage your shipping and billing addresses, and edit your password and account details.</p>
+                            <p class="text-secondary">From your account dashboard you can view your recent orders, manage your shipping and billing addresses, and edit your password and account details.</p>
                         </div>
                     </div>
                     
@@ -130,7 +149,7 @@
                                                 <td>#{{ order.id }}</td>
                                                 <td>{{ order.created_at|date:"M d, Y" }}</td>
                                                 <td>₦{{ order.total_amount|floatformat:2 }}</td>
-                                                <td><span class="badge badge-pill badge-success">{{ order.status|capfirst }}</span></td>
+                                                <td><span class="badge-status {{ order.status }}">{{ order.status|capfirst }}</span></td>
                                             </tr>
                                         {% endfor %}
                                         </tbody>
@@ -141,30 +160,37 @@
                             </div>
                         </div>
                     </div>
-                    
                     <div class="tab-pane fade" id="address-tab" role="tabpanel">
-                        <div class="account-content-card">
-                            <h4>Shipping & Billing Address</h4>
-                            <form method="post" action="{% url 'myapp:accounts' %}">
-                                {% csrf_token %}
-                                <div class="row">
-                                    <div class="col-md-6 form-group">
-                                        <label for="{{ address_form.address_line_1.id_for_label }}">Address</label>
-                                        {{ address_form.address_line_1|add_class:"form-control" }}
-                                    </div>
-                                    <div class="col-md-6 form-group">
-                                        <label for="{{ address_form.city.id_for_label }}">City</label>
-                                        {{ address_form.city|add_class:"form-control" }}
-                                    </div>
-                                    <div class="col-md-6 form-group">
-                                        <label for="{{ address_form.country.id_for_label }}">Country</label>
-                                        {{ address_form.country|add_class:"form-control custom-select" }}
-                                    </div>
-                                </div>
-                                <button class="btn btn-save" type="submit" name="update_address">Save Address</button>
-                            </form>
-                        </div>
-                    </div>
+    <div class="account-content-card">
+        <h4>Shipping & Billing Address</h4>
+        <form method="post" action="{% url 'myapp:accounts' %}">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-12 form-group">
+                    <label for="{{ address_form.address.id_for_label }}">Address</label>
+                    {% render_field address_form.address class="form-control" %}
+                </div>
+                <div class="col-md-6 form-group">
+                    <label for="{{ address_form.city.id_for_label }}">City</label>
+                    {% render_field address_form.city class="form-control" %}
+                </div>
+                <div class="col-md-6 form-group">
+                    <label for="{{ address_form.state.id_for_label }}">State</label>
+                    {% render_field address_form.state class="form-control" %}
+                </div>
+                <div class="col-md-6 form-group">
+                    <label for="{{ address_form.zip_code.id_for_label }}">ZIP Code</label>
+                    {% render_field address_form.zip_code class="form-control" %}
+                </div>
+                <div class="col-md-6 form-group">
+                    <label for="{{ address_form.country.id_for_label }}">Country</label>
+                    {% render_field address_form.country class="custom-select form-control" %}
+                </div>
+            </div>
+            <button class="btn btn-save" type="submit" name="update_address">Save Address</button>
+        </form>
+    </div>
+</div>
                     
                     <div class="tab-pane fade" id="account-tab" role="tabpanel">
                         <div class="account-content-card mb-4">
@@ -172,18 +198,9 @@
                             <form method="post" action="{% url 'myapp:accounts' %}">
                                 {% csrf_token %}
                                 <div class="row">
-                                    <div class="col-md-6 form-group">
-                                        <label for="{{ profile_form.first_name.id_for_label }}">First Name</label>
-                                        {{ profile_form.first_name|add_class:"form-control" }}
-                                    </div>
-                                    <div class="col-md-6 form-group">
-                                        <label for="{{ profile_form.last_name.id_for_label }}">Last Name</label>
-                                        {{ profile_form.last_name|add_class:"form-control" }}
-                                    </div>
-                                    <div class="col-md-12 form-group">
-                                        <label for="{{ profile_form.email.id_for_label }}">Email Address</label>
-                                        {{ profile_form.email|add_class:"form-control" }}
-                                    </div>
+                                    <div class="col-md-6 form-group"><label for="{{ profile_form.first_name.id_for_label }}">First Name</label>{% render_field profile_form.first_name class="form-control" %}</div>
+                                    <div class="col-md-6 form-group"><label for="{{ profile_form.last_name.id_for_label }}">Last Name</label>{% render_field profile_form.last_name class="form-control" %}</div>
+                                    <div class="col-md-12 form-group"><label for="{{ profile_form.email.id_for_label }}">Email Address</label>{% render_field profile_form.email class="form-control" %}</div>
                                 </div>
                                 <button class="btn btn-save" type="submit" name="update_account">Save Account Changes</button>
                             </form>
@@ -193,18 +210,9 @@
                             <h4>Password Change</h4>
                             <form method="post" action="{% url 'myapp:accounts' %}">
                                 {% csrf_token %}
-                                <div class="form-group">
-                                    <label for="{{ password_form.old_password.id_for_label }}">Current Password</label>
-                                    {{ password_form.old_password|add_class:"form-control" }}
-                                </div>
-                                <div class="form-group">
-                                    <label for="{{ password_form.new_password1.id_for_label }}">New Password</label>
-                                    {{ password_form.new_password1|add_class:"form-control" }}
-                                </div>
-                                <div class="form-group">
-                                    <label for="{{ password_form.new_password2.id_for_label }}">Confirm New Password</label>
-                                    {{ password_form.new_password2|add_class:"form-control" }}
-                                </div>
+                                <div class="form-group"><label for="{{ password_form.old_password.id_for_label }}">Current Password</label>{% render_field password_form.old_password class="form-control" %}</div>
+                                <div class="form-group"><label for="{{ password_form.new_password1.id_for_label }}">New Password</label>{% render_field password_form.new_password1 class="form-control" %}</div>
+                                <div class="form-group"><label for="{{ password_form.new_password2.id_for_label }}">Confirm New Password</label>{% render_field password_form.new_password2 class="form-control" %}</div>
                                 <button class="btn btn-save" type="submit" name="change_password">Change Password</button>
                             </form>
                         </div>

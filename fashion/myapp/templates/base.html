@@ -67,7 +67,33 @@
           padding-left: 6%;
           padding-right: 6%;
       }
-
+    
+      .back-to-top {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        width: 50px;
+        height: 50px;
+        background-color: var(--text-primary);
+        color: #fff;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        z-index: 1000;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease, visibility 0.3s ease, background-color 0.3s ease;
+      }
+      .back-to-top.visible {
+        opacity: 1;
+        visibility: visible;
+      }
+      .back-to-top:hover {
+        background-color: #333;
+        color: #fff;
+      }
       /* --- Responsive --- */
       @media (max-width: 767px) {
         body { font-size: 14px; }
@@ -87,6 +113,8 @@
 
     {% include 'footer.html' %}
 
+   <a href="#" class="back-to-top"><i class="fa fa-arrow-up"></i></a>
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.js"></script>
@@ -94,46 +122,56 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     
     <script>
-      // Initialize AOS (Animate on Scroll)
-      AOS.init({
-        duration: 800,
-        once: true,
-      });
+    $(document).ready(function() {
+        // Initialize AOS (Animate on Scroll)
+        AOS.init({ duration: 800, once: true });
 
-      // Banner close button logic
-      document.addEventListener("DOMContentLoaded", function() {
-        const closeBannerBtn = document.getElementById('close-top-banner');
-        if(closeBannerBtn) {
-          closeBannerBtn.addEventListener('click', function() {
-            document.getElementById('top-banner').style.display = 'none';
-          });
-        }
-      });
-      
-      // Toastr Pop-up Message Logic
-      $(document).ready(function() {
-          toastr.options = {
-              "closeButton": true,
-              "progressBar": true,
-              "positionClass": "toast-top-right",
-              "preventDuplicates": true,
-              "timeOut": "5000"
-          };
-          {% if messages %}
-              {% for message in messages %}
-                  var messageText = "{{ message|escapejs }}"; 
-                  var messageTag = "{{ message.tags }}";
-                  if (messageTag === 'success') { toastr.success(messageText); } 
-                  else if (messageTag === 'info') { toastr.info(messageText); } 
-                  else if (messageTag === 'warning') { toastr.warning(messageText); } 
-                  else if (messageTag === 'error') { toastr.error(messageText); } 
-                  else { toastr.info(messageText); }
-              {% endfor %}
-          {% endif %}
-      });
-    </script>
-    
+        // Banner close button logic
+        $('#close-top-banner').on('click', function() {
+            $('#top-banner').slideUp();
+        });
+
+        // === NEW: Mobile search toggle logic moved here ===
+        $('#mobile-search-toggle').on('click', function(e) {
+            e.preventDefault(); // Prevent page jump
+            $('.mobile-search-form').slideToggle();
+        });
+
+        // Toastr Pop-up Message Logic
+        toastr.options = {
+            "closeButton": true,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": true,
+            "timeOut": "5000"
+        };
+        {% if messages %}
+            {% for message in messages %}
+                var messageText = "{{ message|escapejs }}"; 
+                var messageTag = "{{ message.tags }}";
+                if (messageTag === 'success') { toastr.success(messageText); } 
+                else if (messageTag === 'info') { toastr.info(messageText); } 
+                else if (messageTag === 'warning') { toastr.warning(messageText); } 
+                else if (messageTag === 'error') { toastr.error(messageText); } 
+                else { toastr.info(messageText); }
+            {% endfor %}
+        {% endif %}
+
+        // Back to Top Button Logic
+        var backToTopButton = $('.back-to-top');
+        $(window).on('scroll', function() {
+            if ($(this).scrollTop() > 300) {
+                backToTopButton.addClass('visible');
+            } else {
+                backToTopButton.removeClass('visible');
+            }
+        });
+    });
+</script>
+
+
     {% block extra_js %}{% endblock %}
+
 
 </body>
 </html>

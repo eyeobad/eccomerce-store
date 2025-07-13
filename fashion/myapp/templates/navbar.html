@@ -3,16 +3,8 @@
 {% block extra_head %}
 <style>
   /* --- Top Banner & Desktop Navbar --- */
-  .top-banner {
-    background-color: #000; color: #fff; text-align: center; padding: 8px 15px; font-size: 0.9rem;
-  }
-  .top-banner a {
-    color: #fff; font-weight: 600; text-decoration: underline;
-  }
-  .top-banner .close-btn {
-    position: absolute; right: 25px; top: 50%; transform: translateY(-50%);
-    background: none; border: none; color: #fff;
-  }
+  .top-banner { background-color: #000; color: #fff; text-align: center; padding: 8px 15px; font-size: 0.9rem; }
+  .top-banner a { color: #fff; font-weight: 600; text-decoration: underline; }
   .header {
     background-color: var(--background-color); padding: 20px 0;
     border-bottom: 1px solid var(--border-color); position: relative; z-index: 1030;
@@ -21,71 +13,25 @@
     font-size: 2rem; font-weight: 900 !important; color: var(--text-primary) !important;
     transition: letter-spacing 0.4s ease;
   }
-  .navbar-brand:hover {
-    letter-spacing: 1.5px;
-  }
-  .navbar-nav .nav-link {
-    color: var(--text-primary); font-weight: 500; margin: 0 12px;
-  }
-  .search-form {
-    flex-grow: 1; margin: 0 40px;
-  }
-  .search-form .input-group {
-    background-color: #f0f0f0; border-radius: 30px;
-  }
-  .search-form .form-control, .search-form .input-group-text {
-    background: transparent; border: none;
-  }
-  .search-form .form-control:focus {
-    box-shadow: none;
-  }
-  .header-icons .nav-link {
-    font-size: 1.3rem; position: relative; 
-  }
+  .navbar-brand:hover { letter-spacing: 1.5px; }
+  .navbar-nav .nav-link { color: var(--text-primary); font-weight: 500; margin: 0 12px; }
+  .search-form { flex-grow: 1; margin: 0 40px; }
+  .search-form .input-group { background-color: #f0f0f0; border-radius: 30px; }
+  .search-form .form-control, .search-form .input-group-text { background: transparent; border: none; }
+  .search-form .form-control:focus { box-shadow: none; }
+  .header-icons .nav-link { font-size: 1.3rem; position: relative; }
   .cart-badge {
     position: absolute; top: -5px; right: -10px; background-color: #ff3333;
     color: #fff; border-radius: 50%; width: 20px; height: 20px; font-size: 0.7rem;
     font-weight: 600; display: flex; align-items: center; justify-content: center;
   }
-  .mobile-search-form {
-      padding: 10px 6%; border-bottom: 1px solid var(--border-color); display: none;
-  }
-  
+  .mobile-search-form { padding: 10px 6%; border-bottom: 1px solid var(--border-color); display: none; }
+
   /* --- Mobile Navbar Styles --- */
   @media (max-width: 991px) {
-    .header .navbar {
-        display: flex; justify-content: space-between; align-items: center;
-    }
-    .navbar-brand {
-        flex-grow: 1; text-align: center;
-    }
-    .navbar-toggler {
-        border: none; padding: 0; font-size: 1.2rem;
-    }
-    .navbar-toggler:focus {
-      outline: none;
-    }
-    .navbar-collapse {
-        background: #fff; position: absolute; top: 100%; left: 0;
-        width: 100%; padding: 15px 0; box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-        border-top: 1px solid var(--border-color);
-    }
-    .navbar-collapse .navbar-nav .nav-item {
-        width: 100%;
-    }
-    .navbar-collapse .navbar-nav .nav-link {
-        display: block; text-align: center; padding: 18px 15px;
-        font-size: 1.1rem; font-weight: 600; border-bottom: 1px solid #f0f0f0;
-    }
-    .navbar-collapse .navbar-nav .account-links .nav-link {
-        font-size: 1rem; font-weight: 500; color: var(--text-secondary);
-    }
-    .navbar-collapse .navbar-nav .nav-item:last-of-type .nav-link {
-        border-bottom: none;
-    }
-    .navbar-collapse hr {
-         border-top: 1px solid #ddd; margin: 15px 20px;
-    }
+    /* No special dropdown styles needed anymore, simplifying the CSS */
+    .navbar-toggler { display: none; } /* Hide the hamburger menu */
+    .navbar-collapse { display: none !important; } /* Ensure the collapse block is always hidden on mobile */
   }
 </style>
 {% endblock %}
@@ -98,93 +44,60 @@
 <header class="header">
     <div class="container-fluid">
         <nav class="navbar navbar-expand-lg navbar-light p-0">
+            <a href="{% url 'myapp:home' %}" class="navbar-brand mr-auto">Se_un</a>
 
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse">
-                <i class="fas fa-bars"></i>
-            </button>
-            
-            <a href="{% url 'myapp:home' %}" class="navbar-brand">Se_un</a>
-
-            <div class="d-flex align-items-center d-lg-none">
-                <a href="#" class="nav-link" id="mobile-search-toggle">
-                    <i class="fa fa-search"></i>
-                    <span class="sr-only">Toggle Search</span>
-                </a>
-                <a href="{% url 'myapp:cart' %}" class="nav-link">
-                    <i class="fa fa-shopping-cart"></i>
-                    <span class="sr-only">View Cart</span>
-                    {% if cart_item_count > 0 %}<span class="cart-badge">{{ cart_item_count }}</span>{% endif %}
-                </a>
-            </div>
-
-            <div class="collapse navbar-collapse" id="navbarCollapse">
-                <ul class="navbar-nav d-none d-lg-flex mr-auto">
+            <div class="d-none d-lg-flex">
+                <ul class="navbar-nav">
                     {% for category in categories|slice:":4" %}
                         <li class="nav-item">
                             <a href="{% url 'myapp:products' %}?category={{ category.slug }}" class="nav-link">{{ category.name }}</a>
                         </li>
                     {% endfor %}
                 </ul>
-
-                <ul class="navbar-nav d-lg-none">
-                    {% for category in categories %}
-                        <li class="nav-item">
-                            <a href="{% url 'myapp:products' %}?category={{ category.slug }}" class="nav-link">{{ category.name }}</a>
-                        </li>
-                    {% endfor %}
-                    <hr>
-                    <li class="nav-item account-links">
-                        {% if user.is_authenticated %}
-                            <a href="{% url 'myapp:accounts' %}" class="nav-link">My Account</a>
-                        {% else %}
-                            <a href="{% url 'myapp:login' %}" class="nav-link">Login</a>
-                        {% endif %}
-                    </li>
-                    <li class="nav-item account-links">
-                        {% if user.is_authenticated %}
-                            <a href="{% url 'myapp:logout' %}" class="nav-link">Logout</a>
-                        {% else %}
-                            <a href="{% url 'myapp:register' %}" class="nav-link">Register</a>
-                        {% endif %}
-                    </li>
-                </ul>
+            </div>
+            
+            <div class="search-form d-none d-lg-block mx-auto">
+                <form method="get" action="{% url 'myapp:search' %}">
+                    <div class="input-group"><span class="input-group-text"><i class="fa fa-search"></i></span><input type="text" name="q" class="form-control" placeholder="Search..."></div>
+                </form>
+            </div>
+            
+            <div class="header-icons d-flex align-items-center">
+                <a href="#" class="nav-link d-lg-none" id="mobile-search-toggle"><i class="fa fa-search"></i></a>
                 
-                <div class="d-none d-lg-flex align-items-center ml-auto">
-                    <div class="search-form">
-                        <form method="get" action="{% url 'myapp:search' %}">
-                            <div class="input-group"><span class="input-group-text"><i class="fa fa-search"></i></span><input type="text" name="q" class="form-control" placeholder="Search for products..."></div>
-                        </form>
-                    </div>
-                    <div class="header-icons d-flex">
-                        <a href="{% url 'myapp:cart' %}" class="nav-link">
-                            <i class="fa fa-shopping-cart"></i>
-                            <span class="sr-only">View Cart</span>
-                            {% if cart_item_count > 0 %}<span class="cart-badge">{{ cart_item_count }}</span>{% endif %}
-                        </a>
+                <a href="{% url 'myapp:cart' %}" class="nav-link">
+                    <i class="fa fa-shopping-cart"></i>
+                    {% if cart_item_count > 0 %}<span class="cart-badge">{{ cart_item_count }}</span>{% endif %}
+                </a>
+
+                <div class="dropdown d-lg-none">
+                    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i></a>
+                    <div class="dropdown-menu dropdown-menu-right">
                         {% if user.is_authenticated %}
-                            <a href="{% url 'myapp:accounts' %}" class="nav-link">
-                                <i class="fa fa-user"></i>
-                                <span class="sr-only">My Account</span>
-                            </a>
+                            <a href="{% url 'myapp:accounts' %}" class="dropdown-item">My Account</a>
+                            <a href="{% url 'myapp:logout' %}" class="dropdown-item">Logout</a>
                         {% else %}
-                            <a href="{% url 'myapp:login' %}" class="nav-link">
-                                <i class="fa fa-user"></i>
-                                <span class="sr-only">Login</span>
-                            </a>
+                            <a href="{% url 'myapp:login' %}" class="dropdown-item">Login</a>
+                            <a href="{% url 'myapp:register' %}" class="dropdown-item">Register</a>
                         {% endif %}
                     </div>
+                </div>
+
+                <div class="d-none d-lg-block">
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'myapp:accounts' %}" class="nav-link"><i class="fa fa-user"></i></a>
+                    {% else %}
+                        <a href="{% url 'myapp:login' %}" class="nav-link"><i class="fa fa-user"></i></a>
+                    {% endif %}
                 </div>
             </div>
         </nav>
         
         <div class="mobile-search-form d-lg-none mt-3" style="display: none;">
-             <form method="get" action="{% url 'myapp:search' %}">
-                <div class="input-group"><span class="input-group-text"><i class="fa fa-search"></i></span><input type="text" name="q" class="form-control" placeholder="Search for products..."></div>
-            </form>
+             <form method="get" action="{% url 'myapp:search' %}"><div class="input-group"><span class="input-group-text"><i class="fa fa-search"></i></span><input type="text" name="q" class="form-control" placeholder="Search..."></div></form>
         </div>
     </div>
 </header>
-
 
 {% block extra_js %}
 <script>
@@ -193,13 +106,6 @@
             e.preventDefault();
             $('.mobile-search-form').slideToggle();
         });
-        if (typeof toastr !== 'undefined') {
-            toastr.options = {"closeButton": true, "progressBar": true, "positionClass": "toast-top-right", "preventDuplicates": true, "timeOut": "5000"};
-            {% if messages %}{% for message in messages %}
-            var messageText = "{{ message|escapejs }}"; var messageTag = "{{ message.tags }}";
-            if (messageTag === 'success') { toastr.success(messageText); } else if (messageTag === 'info') { toastr.info(messageText); } else if (messageTag === 'warning') { toastr.warning(messageText); } else if (messageTag === 'error') { toastr.error(messageText); } else { toastr.info(messageText); }
-            {% endfor %}{% endif %}
-        }
     });
 </script>
 {% endblock %}
