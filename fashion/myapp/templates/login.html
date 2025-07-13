@@ -1,103 +1,137 @@
 {% extends "base.html" %}
 {% load static %}
 {% load widget_tweaks %}
-{% block title %}E Store - Login{% endblock %}
+
+{% block title %}Login - Se_un{% endblock %}
 
 {% block extra_head %}
 <style>
-  /* Mobile-specific styles for the login page */
-  @media (max-width: 767px) {
-      .login .login-form {
-          padding: 20px;
-          font-size: 14px;
-      }
-      .login .form-control {
-          font-size: 14px;
-          padding: 10px;
-      }
-      .login button.btn {
-          font-size: 16px;
-          padding: 10px 15px;
-      }
-      .login .form-check-label {
-          font-size: 14px;
-      }
-  }
+    .login-page {
+        background-color: #f7f7f7;
+        padding: 80px 0;
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+    }
+    .login-card {
+        background-color: #fff;
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.07);
+    }
+    .login-card h1 {
+        font-weight: 800;
+        font-size: 2.2rem;
+        text-align: center;
+    }
+    .login-card .form-group {
+        margin-bottom: 20px;
+    }
+    .login-card label {
+        font-weight: 600;
+        font-size: 0.9rem;
+        margin-bottom: 8px;
+    }
+    .login-card .form-control {
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        padding: 20px 15px;
+        background-color: #f9f9f9;
+    }
+    .login-card .form-control:focus {
+        border-color: #000;
+        background-color: #fff;
+        box-shadow: 0 0 0 2px rgba(0,0,0,0.1);
+    }
+    .login-card .field-icon {
+        position: absolute;
+        right: 25px;
+        top: 70%;
+        transform: translateY(-50%);
+        color: #aaa;
+        cursor: pointer;
+    }
+    .btn-login {
+        background-color: #000;
+        color: #fff;
+        border-radius: 8px;
+        width: 100%;
+        padding: 15px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: background-color 0.3s ease;
+    }
+    .btn-login:hover {
+        background-color: #333;
+        color: #fff;
+    }
+    .login-footer-links {
+        text-align: center;
+        margin-top: 25px;
+        color: var(--text-secondary);
+    }
 </style>
 {% endblock extra_head %}
 
 {% block content %}
-<!-- Breadcrumb Start -->
-{% include 'breadcrumb.html' %}
-<!-- Breadcrumb End -->
-
-<!-- Login Start -->
-<div class="login">
-    <div class="container-fluid">
+<div class="login-page">
+    <div class="container">
         <div class="row justify-content-center">
-            <div class="col-lg-6">
-                <div class="login-form">
+            <div class="col-lg-5 col-md-8">
+                <div class="login-card">
+                    <h1 class="mb-4">Welcome Back</h1>
                     <form method="post" action="{% url 'myapp:login' %}">
                         {% csrf_token %}
                         
-                        {# Display errors if any #}
-                        {% if form.errors %}
-                            <div class="alert alert-danger">
-                                {% for field in form %}
-                                    {% for error in field.errors %}
-                                        <p>{{ error }}</p>
-                                    {% endfor %}
-                                {% endfor %}
-                                {% for error in form.non_field_errors %}
-                                    <p>{{ error }}</p>
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-                        
-                        <div class="row">
-                            <div class="col-md-12 form-group">
-                                <label>E-mail / Username</label>
-                                {% render_field form.username class="form-control p-3 rounded mb-3" placeholder="E-mail / Username" %}
-                            </div>
-                            <div class="col-md-12 form-group position-relative">
-                                <label>Password</label>
-                                {% render_field form.password class="form-control p-3 rounded mb-3" placeholder="Password" id="password" %}
-                                <span toggle="#password" class="fa fa-eye field-icon toggle-password"></span>
-                            </div>
-                            <div class="col-md-12 mb-3">
-                                <div class="form-check">
-                                    <input type="checkbox" class="form-check-input" id="remember" name="remember">
-                                    <label class="form-check-label" for="remember">Keep me signed in</label>
-                                </div>
-                            </div>
-                            <div class="col-md-12">
-                                <button class="btn btn-primary w-100" type="submit">Submit</button>
-                            </div>
-                            <div class="col-md-12 text-center mt-3">
-                                <p><a href="{% url 'password_reset' %}">Forgot password?</a></p>
-                                <p>Don't have an account? <a href="{% url 'myapp:register' %}">Register here</a></p>
-                            </div>
+                        <div class="form-group">
+                            <label>Username</label>
+                            {% render_field form.username class="form-control" placeholder="Enter your username" %}
                         </div>
+
+                        <div class="form-group position-relative">
+                            <label>Password</label>
+                            {% render_field form.password class="form-control" placeholder="Enter your password" id="id_password" %}
+                            <span toggle="#id_password" class="fa fa-fw fa-eye field-icon toggle-password"></span>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="remember" name="remember">
+                                <label class="form-check-label" for="remember">Keep me signed in</label>
+                            </div>
+                            <a href="{% url 'password_reset' %}">Forgot password?</a>
+                        </div>
+                        
+                        <button class="btn btn-login mt-3" type="submit">Log In</button>
                     </form>
+
+                    <div class="login-footer-links">
+                        <p>Don't have an account? <a href="{% url 'myapp:register' %}">Sign Up</a></p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<!-- Login End -->
 {% endblock content %}
 
 {% block extra_js %}
 <script>
 document.addEventListener("DOMContentLoaded", function() {
-    const togglePassword = document.querySelector('.toggle-password');
-    const passwordField = document.querySelector('#password');
-    
-    togglePassword.addEventListener('click', function() {
-        const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
-        passwordField.setAttribute('type', type);
-        this.classList.toggle('fa-eye');
-        this.classList.toggle('fa-eye-slash');
+    const togglePasswordIcons = document.querySelectorAll(".toggle-password");
+    togglePasswordIcons.forEach(function(icon) {
+        icon.addEventListener("click", function() {
+            const input = document.querySelector(icon.getAttribute("toggle"));
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                input.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
+        });
     });
 });
 </script>

@@ -7,156 +7,41 @@
 {% block extra_head %}
 <style>
     /* === Product Detail Page Styles === */
-    .product-detail-section {
-        padding: 60px 0;
-        background-color: #fff;
-    }
-
-    /* Image Gallery */
-    .product-gallery .main-image img {
-        width: 100%;
-        border-radius: 12px;
-        background-color: #f7f7f7;
-    }
-    .product-thumbnails {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 15px;
-        margin-top: 15px;
-    }
-    .product-thumbnails .thumb img {
-        width: 100%;
-        border-radius: 8px;
-        border: 2px solid transparent;
-        cursor: pointer;
-        transition: border-color 0.3s ease;
-        background-color: #f7f7f7;
-    }
-    .product-thumbnails .thumb.active img,
-    .product-thumbnails .thumb:hover img {
-        border-color: #000;
-    }
-
-    /* Product Info */
-    .product-info h1 {
-        font-size: 2.5rem;
-        font-weight: 700;
-    }
-    .product-info .rating-summary {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin: 15px 0;
-        color: #ffc633;
-    }
-    .product-info .price {
-        font-size: 2rem;
-        font-weight: 700;
-        margin: 20px 0;
-    }
-    .product-info .price .original-price {
-        font-size: 1.2rem;
-        color: #aaa;
-        text-decoration: line-through;
-        margin-left: 15px;
-    }
-    .product-info .short-description {
-        color: var(--text-secondary);
-        line-height: 1.7;
-        font-size: 0.95rem;
-    }
-
-    /* Variants (Color/Size) */
+    .product-detail-section { padding: 60px 0; background-color: #fff; }
+    .product-gallery .main-image img { width: 100%; border-radius: 12px; background-color: #f7f7f7; }
+    .product-thumbnails { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 15px; }
+    .product-thumbnails .thumb img { width: 100%; border-radius: 8px; border: 2px solid transparent; cursor: pointer; transition: border-color 0.3s ease; background-color: #f7f7f7; }
+    .product-thumbnails .thumb.active img, .product-thumbnails .thumb:hover img { border-color: #000; }
+    .product-info h1 { font-size: 2.5rem; font-weight: 700; }
+    .product-info .rating-summary { display: flex; align-items: center; gap: 10px; margin: 15px 0; color: #ffc633; }
+    .product-info .price { font-size: 2rem; font-weight: 700; margin: 20px 0; }
+    .product-info .price .original-price { font-size: 1.2rem; color: #aaa; text-decoration: line-through; margin-left: 15px; }
+    .product-info .short-description { color: var(--text-secondary); line-height: 1.7; font-size: 0.95rem; }
     .variant-group { margin-top: 25px; }
     .variant-group h4 { font-size: 1.1rem; font-weight: 600; margin-bottom: 10px; }
     .color-swatches, .size-swatches { display: flex; gap: 10px; flex-wrap: wrap; }
-    .color-swatch {
-        width: 35px; height: 35px; border-radius: 50%; cursor: pointer;
-        border: 2px solid #fff; box-shadow: 0 0 0 1px #ddd;
-        transition: box-shadow 0.3s ease;
-    }
+    .color-swatch { width: 35px; height: 35px; border-radius: 50%; cursor: pointer; border: 2px solid #fff; box-shadow: 0 0 0 1px #ddd; transition: box-shadow 0.3s ease; }
     .color-swatch.active, .color-swatch:hover { box-shadow: 0 0 0 2px #000; }
-    .size-swatch {
-        background-color: #f0f0f0; padding: 8px 18px; border-radius: 30px;
-        cursor: pointer; font-weight: 500;
-        transition: all 0.3s ease;
-        border: 1px solid transparent;
-    }
+    .size-swatch { background-color: #f0f0f0; padding: 8px 18px; border-radius: 30px; cursor: pointer; font-weight: 500; transition: all 0.3s ease; border: 1px solid transparent; }
     .size-swatch.active, .size-swatch:hover { background-color: #000; color: #fff; }
-
-    /* Quantity & Actions */
-    .quantity-stepper {
-        display: flex; align-items: center; background-color: #f0f0f0;
-        border-radius: 30px; padding: 5px; width: fit-content;
-    }
-    .quantity-stepper .btn {
-        background-color: #fff; border-radius: 50%; width: 40px; height: 40px;
-        display: flex; align-items: center; justify-content: center;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-    }
-    .quantity-stepper input {
-        width: 50px; text-align: center; background: transparent; border: none; font-weight: 600;
-    }
-    .add-to-cart-btn {
-        background-color: #000; color: #fff; border-radius: 30px; padding: 15px 40px;
-        font-weight: 600; transition: background-color 0.3s ease; flex-grow: 1; text-align: center;
-    }
+    .quantity-stepper { display: flex; align-items: center; background-color: #f0f0f0; border-radius: 30px; padding: 5px; width: fit-content; }
+    .quantity-stepper .btn { background-color: #fff; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; }
+    .quantity-stepper input { width: 50px; text-align: center; background: transparent; border: none; font-weight: 600; }
+    .add-to-cart-btn { background-color: #000; color: #fff; border-radius: 30px; padding: 15px 40px; font-weight: 600; transition: background-color 0.3s ease; flex-grow: 1; text-align: center; border: none; }
     .add-to-cart-btn:hover { background-color: #333; color: #fff; }
-
-    /* Polished Tab Navigation */
     .product-details-tabs { padding: 80px 0; border-top: 1px solid #eee; margin-top: 60px; }
     .product-details-tabs .nav-pills { border-bottom: 1px solid #eee; }
-    .product-details-tabs .nav-pills .nav-link {
-        color: #888;
-        font-weight: 600;
-        font-size: 1.1rem;
-        padding: 10px 25px;
-        border-radius: 0;
-        border-bottom: 3px solid transparent;
-        margin-bottom: -2px;
-    }
-    .product-details-tabs .nav-pills .nav-link.active {
-        color: #000;
-        background-color: transparent;
-        border-bottom-color: #000;
-    }
+    .product-details-tabs .nav-pills .nav-link { color: #888; font-weight: 600; font-size: 1.1rem; padding: 10px 25px; border-radius: 0; border-bottom: 3px solid transparent; margin-bottom: -2px; }
+    .product-details-tabs .nav-pills .nav-link.active { color: #000; background-color: transparent; border-bottom-color: #000; }
     .tab-content { padding-top: 40px; }
     .review-card-item { border-bottom: 1px solid #eee; padding: 25px 0; }
-
-    /* Custom Star Rating Form Styles */
-    .star-rating-form {
-        display: inline-flex;
-        flex-direction: row-reverse;
-        justify-content: flex-end;
-    }
-    .star-rating-form input[type="radio"] {
-        display: none;
-    }
-    .star-rating-form label {
-        font-size: 1.8rem;
-        color: #ddd;
-        cursor: pointer;
-        padding: 0 3px;
-        transition: color 0.2s ease;
-    }
-    .star-rating-form input[type="radio"]:checked ~ label,
-    .star-rating-form label:hover,
-    .star-rating-form label:hover ~ label {
-        color: #ffc633;
-    }
-    .add-review-form h4 {
-        font-weight: 600;
-        margin-bottom: 20px;
-    }
-    .add-review-form .form-control {
-        border-radius: 8px;
-        border: 1px solid #ddd;
-        padding: 15px;
-    }
-    .add-review-form .form-control:focus {
-        border-color: #000;
-        box-shadow: 0 0 0 2px rgba(0,0,0,0.1);
-    }
+    .star-rating-form { display: inline-flex; flex-direction: row-reverse; justify-content: flex-end; }
+    .star-rating-form input[type="radio"] { display: none; }
+    .star-rating-form label { font-size: 1.8rem; color: #ddd; cursor: pointer; padding: 0 3px; transition: color 0.2s ease; }
+    .star-rating-form input[type="radio"]:checked ~ label, .star-rating-form label:hover, .star-rating-form label:hover ~ label { color: #ffc633; }
+    .add-review-form h4 { font-weight: 600; margin-bottom: 20px; }
+    .add-review-form .form-control { border-radius: 8px; border: 1px solid #ddd; padding: 15px; }
+    .add-review-form .form-control:focus { border-color: #000; box-shadow: 0 0 0 2px rgba(0,0,0,0.1); }
 </style>
 {% endblock extra_head %}
 
@@ -164,6 +49,7 @@
 <div class="product-detail-section">
     <div class="container">
         <div class="row">
+            <!-- Product Image Gallery (Left Column) -->
             <div class="col-lg-6">
                 <div class="product-gallery">
                     <div class="main-image mb-3">
@@ -171,10 +57,11 @@
                     </div>
                     <div class="product-thumbnails">
                         <div class="thumb active"><img src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'img/default-product.jpg' %}{% endif %}" alt="Thumbnail 1"></div>
-                        </div>
+                    </div>
                 </div>
             </div>
 
+            <!-- Product Info (Right Column) -->
             <div class="col-lg-6">
                 <div class="product-info">
                     <h1>{{ product.name }}</h1>
@@ -201,16 +88,26 @@
                         <div class="size-swatches"><div class="size-swatch">S</div><div class="size-swatch active">M</div><div class="size-swatch">L</div><div class="size-swatch">XL</div></div>
                     </div>
                     <hr>
-                    <div class="d-flex align-items-center gap-3 mt-4">
-                        <div class="quantity-stepper"><button class="btn btn-minus"><i class="fa fa-minus"></i></button><input type="text" value="1"><button class="btn btn-plus"><i class="fa fa-plus"></i></button></div>
-                        <a href="#" class="btn add-to-cart-btn">Add To Cart</a>
-                    </div>
+                    
+                    <!-- This form now links the quantity buttons to the backend -->
+                    <form method="post" action="{% url 'myapp:add_to_cart' product.id %}">
+                        {% csrf_token %}
+                        <div class="d-flex align-items-center gap-3 mt-4">
+                            <div class="quantity-stepper">
+                                <button type="button" class="btn btn-minus">-</button>
+                                <input type="number" name="quantity" value="1" min="1" readonly>
+                                <button type="button" class="btn btn-plus">+</button>
+                            </div>
+                            <button type="submit" class="btn add-to-cart-btn">Add To Cart</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
+<!-- Tabbed Interface for Details & Reviews -->
 <div class="product-details-tabs">
     <div class="container">
         <ul class="nav nav-pills justify-content-center mb-5">
@@ -278,11 +175,11 @@ $(document).ready(function(){
 
     // Quantity stepper logic
     $('.quantity-stepper .btn-plus').on('click', function(){
-        var input = $(this).siblings('input');
+        var input = $(this).siblings('input[name="quantity"]');
         input.val(parseInt(input.val()) + 1);
     });
     $('.quantity-stepper .btn-minus').on('click', function(){
-        var input = $(this).siblings('input');
+        var input = $(this).siblings('input[name="quantity"]');
         var count = parseInt(input.val()) - 1;
         count = count < 1 ? 1 : count;
         input.val(count);

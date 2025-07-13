@@ -1,110 +1,160 @@
 {% extends "base.html" %}
 {% load static %}
 {% load widget_tweaks %}
-{% block title %}E Store - Register{% endblock %}
+
+{% block title %}Create an Account - Se_un{% endblock %}
 
 {% block extra_head %}
 <style>
-  /* Mobile-specific styles for the registration page */
-  @media (max-width: 767px) {
-    .register {
-      padding: 20px 10px;
+    .register-page {
+        background-color: #f7f7f7;
+        padding: 80px 0;
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
     }
-    .register-form {
-      padding: 15px;
+    .register-card {
+        background-color: #fff;
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.07);
     }
-    .register-form label {
-      font-size: 14px;
+    .register-card h1 {
+        font-weight: 800;
+        font-size: 2.2rem;
+        text-align: center;
     }
-    .register-form .form-control {
-      padding: 10px;
-      font-size: 14px;
+    .register-card .form-group {
+        margin-bottom: 20px;
     }
-    .register-form button.btn {
-      font-size: 16px;
-      padding: 10px 15px;
-      margin-top: 15px;
+    .register-card label {
+        font-weight: 600;
+        font-size: 0.9rem;
+        margin-bottom: 8px;
     }
-  }
+    .register-card .form-control {
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        padding: 15px; /* Adjusted padding */
+        height: 50px; /* Consistent height */
+        background-color: #f9f9f9;
+        width: 100%; /* Ensure it takes full width of its container */
+    }
+    .register-card .form-control:focus {
+        border-color: #000;
+        background-color: #fff;
+        box-shadow: 0 0 0 2px rgba(0,0,0,0.1);
+    }
+
+    /* === FIX: Correctly position the password icon === */
+    .password-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+    .password-wrapper .form-control {
+        padding-right: 45px; /* Add space on the right for the icon */
+    }
+    .field-icon {
+        position: absolute;
+        right: 15px;
+        color: #aaa;
+        cursor: pointer;
+        z-index: 10; /* Ensure icon is clickable */
+    }
+    
+    .btn-register {
+        background-color: #000;
+        color: #fff;
+        border-radius: 8px;
+        width: 100%;
+        padding: 15px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: background-color 0.3s ease;
+    }
+    .btn-register:hover {
+        background-color: #333;
+        color: #fff;
+    }
+    .login-prompt {
+        text-align: center;
+        margin-top: 25px;
+        color: var(--text-secondary);
+    }
+    .invalid-feedback {
+        display: block; color: #dc3545; font-size: 0.8rem; margin-top: 5px;
+    }
 </style>
 {% endblock extra_head %}
 
 {% block content %}
-<!-- Breadcrumb Start -->
-{% include 'breadcrumb.html' %}
-<!-- Breadcrumb End -->
-
-<!-- Registration Form Start -->
-<div class="register p-4">
-    <div class="container-fluid">
+<div class="register-page">
+    <div class="container">
         <div class="row justify-content-center">
-            <div class="col-lg-6">
-                <div class="register-form">
+            <div class="col-lg-7 col-md-9">
+                <div class="register-card">
+                    <h1 class="mb-4">Create an Account</h1>
                     <form method="POST" action="{% url 'myapp:register' %}">
                         {% csrf_token %}
                         <div class="row">
                             <div class="col-md-6 form-group">
                                 <label>First Name</label>
-                                {{ form.first_name|add_class:"form-control p-3 rounded mb-3" }}
-                                {% for error in form.first_name.errors %}
-                                {% endfor %}
+                                {% render_field form.first_name class+="form-control" %}
+                                {% for error in form.first_name.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
                             </div>
                             <div class="col-md-6 form-group">
                                 <label>Last Name</label>
-                                {{ form.last_name|add_class:"form-control p-3 rounded mb-3" }}
-                                {% for error in form.last_name.errors %}
-                                {% endfor %}
+                                {% render_field form.last_name class+="form-control" %}
+                                {% for error in form.last_name.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
                             </div>
-                            <!-- Username Field -->
                             <div class="col-md-12 form-group">
                                 <label>Username</label>
-                                {{ form.username|add_class:"form-control p-3 rounded mb-3" }}
-                                {% for error in form.username.errors %}
-                                    <div class="error">{{ error }}</div>
-                                {% endfor %}
+                                {% render_field form.username class+="form-control" %}
+                                {% for error in form.username.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
                             </div>
-                            <div class="col-md-6 form-group">
+                            <div class="col-md-12 form-group">
                                 <label>E-mail</label>
-                                {{ form.email|add_class:"form-control p-3 rounded mb-3" }}
-                                {% for error in form.email.errors %}
-                                {% endfor %}
+                                {% render_field form.email class+="form-control" %}
+                                {% for error in form.email.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+                            </div>
+                                  <div class="col-md-12 form-group">
+                                <label>Mobile Number</label>
+                                {% render_field form.mobile class+="form-control" %}
+                                {% for error in form.mobile.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+                            </div>
+
+                            <div class="col-md-6 form-group">
+                                <label>Password</label>
+                                <div class="password-wrapper">
+                                    {% render_field form.password1 class+="form-control" id="id_password1" %}
+                                    <span toggle="#id_password1" class="fa fa-fw fa-eye field-icon toggle-password"></span>
+                                </div>
+                                {% for error in form.password1.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
                             </div>
                             <div class="col-md-6 form-group">
-                                <label>Mobile No</label>
-                                {{ form.mobile|add_class:"form-control p-3 rounded mb-3" }}
-                                {% for error in form.mobile.errors %}
-                                {% endfor %}
-                            </div>
-                            <!-- Password Field with Toggle -->
-                            <div class="col-md-6 form-group position-relative">
-                                <label>Password</label>
-                                {{ form.password1|add_class:"form-control p-3 rounded mb-3" }}
-                                <span toggle="#{{ form.password1.id_for_label }}" class="fa fa-eye field-icon toggle-password"></span>
-                                {% for error in form.password1.errors %}
-                                {% endfor %}
-                            </div>
-                            <!-- Retype Password Field with Toggle -->
-                            <div class="col-md-6 form-group position-relative">
-                                <label>Retype Password</label>
-                                {{ form.password2|add_class:"form-control p-3 rounded mb-3" }}
-                                <span toggle="#{{ form.password2.id_for_label }}" class="fa fa-eye field-icon toggle-password"></span>
-                                {% for error in form.password2.errors %}
-                                {% endfor %}
+                                <label>Confirm Password</label>
+                                <div class="password-wrapper">
+                                    {% render_field form.password2 class+="form-control" id="id_password2" %}
+                                    <span toggle="#id_password2" class="fa fa-fw fa-eye field-icon toggle-password"></span>
+                                </div>
+                                {% for error in form.password2.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
                             </div>
                             <div class="col-md-12">
-                                <button class="btn btn-primary mt-3" type="submit">Submit</button>
+                                <button class="btn btn-register mt-3" type="submit">Create Account</button>
                             </div>
                         </div>
                     </form>
+                    <div class="login-prompt">
+                        <p>Already have an account? <a href="{% url 'myapp:login' %}">Log In</a></p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<!-- Registration Form End -->
 {% endblock content %}
 
-<!-- Toggle Password Visibility Script -->
 {% block extra_js %}
 <script>
 document.addEventListener("DOMContentLoaded", function() {
@@ -112,12 +162,12 @@ document.addEventListener("DOMContentLoaded", function() {
     togglePasswordIcons.forEach(function(icon) {
         icon.addEventListener("click", function() {
             const input = document.querySelector(icon.getAttribute("toggle"));
-            if (input.getAttribute("type") === "password") {
-                input.setAttribute("type", "text");
+            if (input.type === "password") {
+                input.type = "text";
                 icon.classList.remove("fa-eye");
                 icon.classList.add("fa-eye-slash");
             } else {
-                input.setAttribute("type", "password");
+                input.type = "password";
                 icon.classList.remove("fa-eye-slash");
                 icon.classList.add("fa-eye");
             }

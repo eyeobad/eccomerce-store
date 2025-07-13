@@ -1,83 +1,152 @@
 {% extends "base.html" %}
 {% load static %}
-{% load widget_tweaks %}
-
-{% block title %}Search Results{% endblock %}
+{% block title %}Search Results for "{{ query }}"{% endblock %}
 
 {% block extra_head %}
 <style>
-  /* Mobile-specific styles for search results */
-  @media (max-width: 767px) {
-    .list-group-item {
-      font-size: 14px;
-      padding: 8px 10px;
+    :root {
+        --card-bg: #fff;
+        --card-radius: 20px;
+        --light-grey: #f7f7f7;
     }
-    .list-group-item img {
-      width: 40px !important;
-      height: 40px !important;
-      margin-right: 8px;
+    .search-results-page {
+        background-color: #fff;
+        padding: 60px 0;
     }
-    .badge {
-      font-size: 14px;
-      padding: 4px 8px;
+    .results-header h1 {
+        font-weight: 800;
+        font-size: 2.5rem;
     }
-  }
+    .results-header span {
+        color: var(--text-secondary);
+    }
+    .results-section {
+        margin-top: 50px;
+    }
+    .results-section h3 {
+        font-weight: 700;
+        font-size: 1.8rem;
+        margin-bottom: 25px;
+    }
+
+    /* === Category Card Style === */
+    .category-card {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        padding: 20px;
+        background-color: var(--light-grey);
+        border-radius: var(--card-radius);
+        text-decoration: none;
+        color: var(--text-primary);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .category-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        text-decoration: none;
+        color: var(--text-primary);
+    }
+    .category-card img {
+        width: 70px;
+        height: 70px;
+        object-fit: cover;
+        border-radius: 12px;
+    }
+    .category-card .category-name {
+        font-size: 1.2rem;
+        font-weight: 600;
+    }
+
+    /* === Product Card (Consistent with Homepage) === */
+    .product-card {
+        background-color: var(--light-grey);
+        border-radius: var(--card-radius);
+        overflow: hidden;
+        margin-bottom: 30px;
+        transition: all 0.3s ease;
+    }
+    .product-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
+    .product-card .product-image {
+        height: 280px;
+        width: 100%;
+        object-fit: cover;
+    }
+    .product-card .product-info { padding: 20px; }
+    .product-card .product-title { font-weight: 600; font-size: 1.1rem; }
+    .product-card .ratting { color: #ffc633; }
+    .product-card .current-price { font-weight: 700; font-size: 1.3rem; }
+
 </style>
 {% endblock extra_head %}
 
 {% block content %}
-<div class="container my-4">
-  <h2 class="mb-4">Search Results for "{{ query }}"</h2>
+<div class="search-results-page">
+    <div class="container">
+        <div class="results-header text-center">
+            <h1>Search Results</h1>
+            {% if query %}
+                <p class="h4 mt-2">For: "<span>{{ query }}</span>"</p>
+            {% else %}
+                 <p class="text-muted">Please enter a search term.</p>
+            {% endif %}
+        </div>
 
-  <!-- Categories Results -->
-  <div class="mb-5">
-    <h3 class="mb-3">Categories</h3>
-    {% if category_results %}
-      <ul class="list-group">
-        {% for category in category_results %}
-          <li class="list-group-item d-flex justify-content-between align-items-center">
-            <div class="d-flex align-items-center">
-              {% if category.image %}
-                <img src="{{ category.image.url }}" alt="{{ category.name }}" class="img-thumbnail mr-3" style="width:50px; height:50px;">
-              {% else %}
-                <img src="{% static 'img/default-category.png' %}" alt="{{ category.name }}" class="img-thumbnail mr-3" style="width:50px; height:50px;">
-              {% endif %}
-              <a href="{% url 'myapp:category_detail' category.slug %}" class="text-decoration-none text-dark">
-                {{ category.name }}
-              </a>
+        {% if category_results %}
+        <div class="results-section">
+            <h3>Category Matches</h3>
+            <div class="row">
+                {% for category in category_results %}
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <a href="{% url 'myapp:category_detail' category.slug %}" class="category-card">
+                        <img src="{% if category.image %}{{ category.image.url }}{% else %}{% static 'img/default-category.png' %}{% endif %}" alt="{{ category.name }}">
+                        <span class="category-name">{{ category.name }}</span>
+                    </a>
+                </div>
+                {% endfor %}
             </div>
-          </li>
-        {% endfor %}
-      </ul>
-    {% else %}
-      <p class="text-muted">No categories found.</p>
-    {% endif %}
-  </div>
+        </div>
+        {% endif %}
 
-  <!-- Products Results -->
-  <div>
-    <h3 class="mb-3">Products</h3>
-    {% if product_results %}
-      <ul class="list-group">
-        {% for product in product_results %}
-          <li class="list-group-item d-flex justify-content-between align-items-center">
-            <div class="d-flex align-items-center">
-              {% if product.image %}
-                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-thumbnail mr-3" style="width:50px; height:50px;">
-              {% else %}
-                <img src="{% static 'img/default-product.png' %}" alt="{{ product.name }}" class="img-thumbnail mr-3" style="width:50px; height:50px;">
-              {% endif %}
-              <a href="{% url 'myapp:product_detail' product.pk %}" class="text-decoration-none text-dark">
-                {{ product.name }}
-              </a>
+        {% if product_results %}
+        <div class="results-section">
+            <h3>Product Matches</h3>
+            <div class="row">
+                {% for product in product_results %}
+                    <div class="col-lg-3 col-md-4 col-sm-6">
+                        <div class="product-card">
+                            <a href="{% url 'myapp:product_detail' product.id %}">
+                               <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'img/default-product.jpg' %}{% endif %}" alt="{{ product.name }}" class="product-image">
+                            </a>
+                            <div class="product-info">
+                                <h5 class="product-title"><a href="{% url 'myapp:product_detail' product.id %}">{{ product.name }}</a></h5>
+                                <div class="ratting mt-2">
+                                    {% with rating=product.average_rating|default:4 %}
+                                    {% for i in "12345"|make_list %}{% if forloop.counter <= rating %}<i class="fa fa-star"></i>{% else %}<i class="far fa-star text-muted"></i>{% endif %}{% endfor %}
+                                    {% endwith %}
+                                </div>
+                                <div class="product-price mt-2">
+                                    <span class="current-price">₦{{ product.price|floatformat:2 }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
             </div>
-            <span class="badge bg-primary rounded-pill">&#8358;{{ product.price }}</span>
-          </li>
-        {% endfor %}
-      </ul>
-    {% else %}
-      <p class="text-muted">No products found.</p>
-    {% endif %}
-  </div>
+        </div>
+        {% endif %}
+
+        {% if not category_results and not product_results and query %}
+            <div class="text-center mt-5">
+                <h4>No results found for "{{ query }}"</h4>
+                <p class="text-muted">Try searching for something else or check out our popular products.</p>
+                <a href="{% url 'myapp:products' %}" class="btn btn-dark mt-3">View All Products</a>
+            </div>
+        {% endif %}
+
+    </div>
 </div>
 {% endblock content %}

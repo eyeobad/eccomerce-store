@@ -1,106 +1,158 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %}Staff Dashboard{% endblock title %}
+{% block title %}Staff Dashboard - Se_un{% endblock %}
 
 {% block extra_head %}
 <style>
-  /* Mobile-specific styling for Staff Dashboard */
-  @media (max-width: 767px) {
-    .container.my-4 h1 {
-      font-size: 22px;
-      margin-bottom: 20px;
+    :root {
+        --card-radius: 12px;
+        --light-grey: #f7f7f7;
     }
-    .card {
-      margin-bottom: 15px;
-      /* Reduce padding within cards */
-      padding: 10px;
+    .dashboard-page {
+        background-color: var(--light-grey);
+        padding: 60px 0;
     }
-    .card-body {
-      padding: 10px;
+    .dashboard-header {
+        margin-bottom: 40px;
     }
-    .card-title {
-      font-size: 16px;
-      margin-bottom: 10px;
+    .dashboard-header h1 {
+        font-weight: 800;
+        font-size: 2.5rem;
     }
-    .card-text {
-      font-size: 14px;
-      margin-bottom: 10px;
+
+    /* === Dashboard Info Card Styles === */
+    .info-card {
+        background-color: #fff;
+        border-radius: var(--card-radius);
+        padding: 30px;
+        border: none;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
-    .btn {
-      padding: 8px 12px;
-      font-size: 14px;
+    .info-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
     }
-  }
+    .info-card .icon-box {
+        width: 60px;
+        height: 60px;
+        border-radius: var(--card-radius);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: #fff;
+    }
+    .info-card .card-content h5 {
+        font-weight: 600;
+        color: #888;
+        font-size: 1rem;
+        text-transform: uppercase;
+    }
+    .info-card .card-content p {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #000;
+        margin: 0;
+    }
+
+    /* Custom colors for each card icon */
+    .icon-box.bg-users { background-color: #4A90E2; } /* Blue */
+    .icon-box.bg-orders { background-color: #50E3C2; } /* Teal */
+    .icon-box.bg-products { background-color: #F5A623; } /* Orange */
+    .icon-box.bg-categories { background-color: #BD10E0; } /* Purple */
+    .icon-box.bg-brands { background-color: #9013FE; } /* Violet */
+    .icon-box.bg-sliders { background-color: #B8E986; } /* Light Green */
+    
+    .manage-link {
+        margin-top: 20px;
+        font-weight: 600;
+    }
 </style>
 {% endblock extra_head %}
 
 {% block content %}
-<div class="container my-4">
-    <h1 class="mb-4">Staff Dashboard</h1>
-    <div class="row">
-        <!-- Users Card -->
-        <div class="col-md-4 mb-3">
-            <div class="card h-100 shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">Users</h5>
-                    <p class="card-text">{{ user_count }} Users</p>
-                    <a href="{% url 'admin:myapp_customuser_changelist' %}" class="btn btn-primary">Manage Users</a>
-                </div>
-            </div>
+<div class="dashboard-page">
+    <div class="container">
+        <div class="dashboard-header text-center">
+            <h1>Staff Dashboard</h1>
+            <p class="text-secondary">Welcome, {{ request.user.username }}. Here's an overview of your site.</p>
         </div>
 
-        <!-- Orders Card -->
-        <div class="col-md-4 mb-3">
-            <div class="card h-100 shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">Orders</h5>
-                    <p class="card-text">{{ order_count }} Orders</p>
-                    <a href="{% url 'admin:myapp_order_changelist' %}" class="btn btn-primary">Manage Orders</a>
-                </div>
+        <div class="row">
+            <div class="col-lg-4 col-md-6 mb-4">
+                <a href="{% url 'admin:myapp_customuser_changelist' %}" class="text-decoration-none">
+                    <div class="info-card h-100">
+                        <div class="icon-box bg-users"><i class="fas fa-users"></i></div>
+                        <div class="card-content">
+                            <h5>Users</h5>
+                            <p>{{ user_count }}</p>
+                        </div>
+                    </div>
+                </a>
             </div>
-        </div>
 
-        <!-- Products Card -->
-        <div class="col-md-4 mb-3">
-            <div class="card h-100 shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">Products</h5>
-                    <p class="card-text">{{ product_count }} Products</p>
-                    <a href="{% url 'admin:myapp_product_changelist' %}" class="btn btn-primary">Manage Products</a>
-                </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <a href="{% url 'admin:myapp_order_changelist' %}" class="text-decoration-none">
+                    <div class="info-card h-100">
+                        <div class="icon-box bg-orders"><i class="fas fa-box-open"></i></div>
+                        <div class="card-content">
+                            <h5>Orders</h5>
+                            <p>{{ order_count }}</p>
+                        </div>
+                    </div>
+                </a>
             </div>
-        </div>
 
-        <!-- Categories Card -->
-        <div class="col-md-4 mb-3">
-            <div class="card h-100 shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">Categories</h5>
-                    <p class="card-text">{{ category_count }} Categories</p>
-                    <a href="{% url 'admin:myapp_category_changelist' %}" class="btn btn-primary">Manage Categories</a>
-                </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <a href="{% url 'admin:myapp_product_changelist' %}" class="text-decoration-none">
+                    <div class="info-card h-100">
+                        <div class="icon-box bg-products"><i class="fas fa-tshirt"></i></div>
+                        <div class="card-content">
+                            <h5>Products</h5>
+                            <p>{{ product_count }}</p>
+                        </div>
+                    </div>
+                </a>
             </div>
-        </div>
 
-        <!-- Brands Card -->
-        <div class="col-md-4 mb-3">
-            <div class="card h-100 shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">Brands</h5>
-                    <p class="card-text">{{ brand_count }} Brands</p>
-                    <a href="{% url 'admin:myapp_brand_changelist' %}" class="btn btn-primary">Manage Brands</a>
-                </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <a href="{% url 'admin:myapp_category_changelist' %}" class="text-decoration-none">
+                    <div class="info-card h-100">
+                        <div class="icon-box bg-categories"><i class="fas fa-sitemap"></i></div>
+                        <div class="card-content">
+                            <h5>Categories</h5>
+                            <p>{{ category_count }}</p>
+                        </div>
+                    </div>
+                </a>
             </div>
-        </div>
 
-        <!-- Slider Images Card -->
-        <div class="col-md-4 mb-3">
-            <div class="card h-100 shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">Slider Images</h5>
-                    <p class="card-text">{{ slider_count }} Slider Images</p>
-                    <a href="{% url 'admin:myapp_sliderimage_changelist' %}" class="btn btn-primary">Manage Sliders</a>
-                </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <a href="{% url 'admin:myapp_brand_changelist' %}" class="text-decoration-none">
+                    <div class="info-card h-100">
+                        <div class="icon-box bg-brands"><i class="fas fa-copyright"></i></div>
+                        <div class="card-content">
+                            <h5>Brands</h5>
+                            <p>{{ brand_count }}</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-lg-4 col-md-6 mb-4">
+                <a href="{% url 'admin:myapp_sliderimage_changelist' %}" class="text-decoration-none">
+                    <div class="info-card h-100">
+                        <div class="icon-box bg-sliders"><i class="fas fa-images"></i></div>
+                        <div class="card-content">
+                            <h5>Sliders</h5>
+                            <p>{{ slider_count }}</p>
+                        </div>
+                    </div>
+                </a>
             </div>
         </div>
     </div>
