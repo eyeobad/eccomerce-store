@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings
 from decimal import Decimal
-
+from django.core.validators import MinValueValidator, MaxValueValidator
 class CustomUser(AbstractUser):
     mobile = models.CharField(max_length=20, blank=True, null=True)
     address = models.CharField(max_length=255, blank=True, null=True)
@@ -150,3 +150,21 @@ class NewsletterSubscription(models.Model):
 
     def __str__(self):
         return self.email
+    
+
+class Review(models.Model):
+    reviewer_name = models.CharField(max_length=100, help_text="e.g., Sarah J.")
+    rating = models.PositiveSmallIntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(5)],
+        help_text="Rating from 1 to 5"
+    )
+    comment = models.TextField()
+    is_verified = models.BooleanField(default=True, help_text="Show a 'verified' checkmark next to the name.")
+    is_approved = models.BooleanField(default=True, help_text="Approve the review to make it visible on the site.")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at'] # Show newest reviews first
+
+    def __str__(self):
+        return f"Review by {self.reviewer_name} - {self.rating} Stars"

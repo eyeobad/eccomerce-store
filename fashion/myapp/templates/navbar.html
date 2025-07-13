@@ -87,7 +87,7 @@
     .header { padding: 15px 0; }
     .search-form {
         margin: 15px 0 0;
-        order: 3; /* Make search appear below links */
+        order: 3;
         width: 100%;
     }
     .navbar-collapse {
@@ -121,7 +121,6 @@
                             <a href="{% url 'myapp:products' %}?category={{ category.slug }}" class="nav-link">{{ category.name }}</a>
                         </li>
                     {% endfor %}
-              
                 </ul>
 
                 <form class="search-form" method="get" action="{% url 'myapp:search' %}">
@@ -147,3 +146,48 @@
         </nav>
     </div>
 </header>
+
+{% block extra_js %}
+<script>
+    // Note: The toastr.js library itself should be loaded in base.html
+    $(document).ready(function() {
+        
+        // This check is to ensure toastr is loaded before we try to use it.
+        if (typeof toastr !== 'undefined') {
+            toastr.options = {
+                "closeButton": true,
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "preventDuplicates": true,
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "5000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            };
+
+            {% if messages %}
+                {% for message in messages %}
+                    var messageText = "{{ message|escapejs }}"; 
+                    var messageTag = "{{ message.tags }}";
+
+                    if (messageTag === 'success') {
+                        toastr.success(messageText);
+                    } else if (messageTag === 'info') {
+                        toastr.info(messageText);
+                    } else if (messageTag === 'warning') {
+                        toastr.warning(messageText);
+                    } else if (messageTag === 'error') {
+                        toastr.error(messageText);
+                    } else {
+                        toastr.info(messageText);
+                    }
+                {% endfor %}
+            {% endif %}
+        }
+    });
+</script>
+{% endblock %}

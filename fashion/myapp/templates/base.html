@@ -4,7 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}SHOP.CO{% endblock %}</title>
+    
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="High-quality fashion and clothing from top international brands.">
+    <meta name="author" content="SHOP.CO">
 
     <link rel="icon" href="{% static 'img/favicon.ico' %}">
 
@@ -14,11 +17,10 @@
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"/>
-
     <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 
     <style>
       /* --- Global Styles & Variables --- */
@@ -88,15 +90,17 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.js"></script>
-    
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    
     <script>
+      // Initialize AOS (Animate on Scroll)
       AOS.init({
         duration: 800,
         once: true,
       });
 
-      // Script for top banner close button
+      // Banner close button logic
       document.addEventListener("DOMContentLoaded", function() {
         const closeBannerBtn = document.getElementById('close-top-banner');
         if(closeBannerBtn) {
@@ -104,6 +108,28 @@
             document.getElementById('top-banner').style.display = 'none';
           });
         }
+      });
+      
+      // Toastr Pop-up Message Logic
+      $(document).ready(function() {
+          toastr.options = {
+              "closeButton": true,
+              "progressBar": true,
+              "positionClass": "toast-top-right",
+              "preventDuplicates": true,
+              "timeOut": "5000"
+          };
+          {% if messages %}
+              {% for message in messages %}
+                  var messageText = "{{ message|escapejs }}"; 
+                  var messageTag = "{{ message.tags }}";
+                  if (messageTag === 'success') { toastr.success(messageText); } 
+                  else if (messageTag === 'info') { toastr.info(messageText); } 
+                  else if (messageTag === 'warning') { toastr.warning(messageText); } 
+                  else if (messageTag === 'error') { toastr.error(messageText); } 
+                  else { toastr.info(messageText); }
+              {% endfor %}
+          {% endif %}
       });
     </script>
     

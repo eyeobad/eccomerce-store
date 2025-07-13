@@ -472,40 +472,45 @@
         </div>
     </div>
 </section>
-
-    <section class="reviews-section" data-aos="fade-up">
-        <div class="container-fluid">
-            <div class="section-header">
-                <h1>OUR HAPPY CUSTOMERS</h1>
-                <div class="slider-nav">
-                    <button class="prev-arrow"><i class="fas fa-arrow-left"></i></button>
-                    <button class="next-arrow"><i class="fas fa-arrow-right"></i></button>
-                </div>
-            </div>
-            <div class="review-slider">
-                <div class="review-card">
-                    <div class="stars"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i></div>
-                    <h4 class="reviewer">Sarah J. <i class="fas fa-check-circle"></i></h4>
-                    <p>"I'm obsessed with the quality and style. The dress I bought was even better in person. Definitely my new favorite store!"</p>
-                </div>
-                <div class="review-card">
-                    <div class="stars"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half-alt"></i></div>
-                    <h4 class="reviewer">Alex K. <i class="fas fa-check-circle"></i></h4>
-                    <p>"Finding clothes that fit my style is usually a challenge, but SHOP.CO had a great selection. The delivery was fast too."</p>
-                </div>
-                <div class="review-card">
-                    <div class="stars"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i></div>
-                    <h4 class="reviewer">James L. <i class="fas fa-check-circle"></i></h4>
-                    <p>"The customer service was excellent. I had a question about my order and they responded almost immediately. Highly recommend."</p>
-                </div>
-                 <div class="review-card">
-                    <div class="stars"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i></div>
-                    <h4 class="reviewer">Maddy M. <i class="fas fa-check-circle"></i></h4>
-                    <p>"I love the 'Browse by Dress Style' feature. It makes it so easy to find exactly what I'm looking for. The party dress was a hit!"</p>
-                </div>
+<section class="reviews-section" data-aos="fade-up">
+    <div class="container-fluid">
+        <div class="section-header">
+            <h1>OUR HAPPY CUSTOMERS</h1>
+            <div class="slider-nav">
+                <button class="prev-arrow"><i class="fas fa-arrow-left"></i></button>
+                <button class="next-arrow"><i class="fas fa-arrow-right"></i></button>
             </div>
         </div>
-    </section>
+        
+        <div class="review-slider">
+            {% for review in reviews %}
+            <div class="review-card">
+                <div class="stars">
+                    {% for i in "12345"|make_list %}
+                        {% if forloop.counter <= review.rating %}
+                            <i class="fa fa-star"></i>
+                        {% else %}
+                            <i class="far fa-star"></i> {# 'far' is for an empty star #}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <h4 class="reviewer">
+                    {{ review.reviewer_name }} 
+                    {% if review.is_verified %}
+                        <i class="fas fa-check-circle" style="color: #33aaff;"></i>
+                    {% endif %}
+                </h4>
+                <p>"{{ review.comment }}"</p>
+            </div>
+            {% empty %}
+                <div class="review-card">
+                    <p class="text-center">Be the first to leave a review!</p>
+                </div>
+            {% endfor %}
+        </div>
+        
+    </div>
+</section>
 
     <section class="container-fluid" data-aos="fade-up">
         <div class="newsletter-section">

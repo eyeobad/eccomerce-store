@@ -3,7 +3,7 @@ from django.contrib.auth.admin import UserAdmin
 from django.utils.html import format_html
 from .models import (
     CustomUser, Product, Category, Brand, SliderImage,
-    Order, OrderItem, NewsletterSubscription
+    Order, OrderItem, NewsletterSubscription,Review
 )
 
 @admin.register(CustomUser)
@@ -105,3 +105,11 @@ class OrderItemAdmin(admin.ModelAdmin):
 class NewsletterSubscriptionAdmin(admin.ModelAdmin):
     list_display = ('email', 'date_subscribed')
     search_fields = ('email',)
+
+@admin.register(Review)
+class ReviewAdmin(admin.ModelAdmin):
+    list_display = ('reviewer_name', 'rating', 'is_approved', 'created_at')
+    list_filter = ('is_approved', 'rating', 'is_verified')
+    list_editable = ('is_approved',)
+    search_fields = ('reviewer_name', 'comment')
+    date_hierarchy = 'created_at'

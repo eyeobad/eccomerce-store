@@ -18,7 +18,7 @@ from django.core.paginator import Paginator
 
 from .models import (
     CustomUser, Product, Category, Brand, SliderImage, Coupon,
-    Cart, CartItem, Order,OrderItem,NewsletterSubscription
+    Cart, CartItem, Order,OrderItem,NewsletterSubscription,Review
 )
 
 import requests
@@ -31,6 +31,7 @@ def home(request):
         'recent_products': Product.objects.order_by('-created_at')[:8],
         'brands': Brand.objects.all(),
         'slider_images': SliderImage.objects.filter(active=True).order_by('order'),
+        'reviews': Review.objects.filter(is_approved=True).order_by('-created_at')[:5], 
     }
     
     if request.method == "POST":
@@ -488,3 +489,16 @@ def confirm_payment(request, pk):
     
     # Redirect to the My Account page regardless of order creation
     return redirect('myapp:accounts')
+
+
+def newsletter_list(request):
+    """
+    A view for staff to see all newsletter subscribers.
+    """
+    subscriptions = NewsletterSubscription.objects.all().order_by('-date_subscribed')
+    
+    context = {
+        'subscriptions': subscriptions,
+        'subscription_count': subscriptions.count(),
+    }
+    return render(request, 'newsletter_list.html', context)
