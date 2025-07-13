@@ -4,248 +4,220 @@
 
 {% block extra_head %}
 <style>
-  /* --- Hero Section --- */
-  .hero-section {
+/* ===================================================================
+   TABLE OF CONTENTS
+   ---
+   0.  Global & Utility Styles
+   1.  Hero Section
+   2.  Brands Section
+   3.  Product Section (New Arrivals & Top Selling)
+   4.  Category / Dress Style Section
+   5.  Reviews Section
+   6.  Newsletter Section
+   7.  Responsive Media Queries
+====================================================================== */
+
+/* --- 0. Global & Utility Styles --- */
+:root {
+    --transition-speed: 0.3s ease;
+    --card-radius: 20px;
+    --shadow-light: 0 4px 15px rgba(0, 0, 0, 0.05);
+    --shadow-medium: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+hr {
+    border-color: var(--border-color);
+    margin: 80px 6%;
+}
+
+.view-all-btn {
+    display: block;
+    width: 200px;
+    margin: 40px auto 0;
+    padding: 12px 20px;
+    border: 1px solid var(--border-color);
+    border-radius: 30px;
+    text-align: center;
+    font-weight: 600;
+    transition: all var(--transition-speed);
+}
+.view-all-btn:hover {
+    background-color: var(--text-primary);
+    color: var(--background-color);
+    border-color: var(--text-primary);
+}
+
+/* --- 1. Hero Section --- */
+.hero-section {
     background-color: #f2f0f1;
     overflow: hidden;
-  }
-  .hero-section .container-fluid {
-    padding: 0;
-  }
-  .hero-content {
+}
+.hero-content {
     display: flex;
     flex-direction: column;
     justify-content: center;
     padding: 50px 6%;
     height: 100%;
-  }
-  .hero-content h1 {
+}
+.hero-content h1 {
     font-size: 4rem;
     font-weight: 800;
     line-height: 1.2;
-  }
-  .hero-content p {
+}
+.hero-content p {
     color: var(--text-secondary);
     margin: 20px 0 30px;
     max-width: 450px;
-  }
-  .hero-content .btn-shop-now {
+}
+.hero-content .btn-shop-now {
     background-color: var(--text-primary);
     color: #fff;
     border-radius: 30px;
     padding: 15px 40px;
     font-weight: 600;
     max-width: 200px;
-  }
-  .hero-stats {
+    transition: background-color var(--transition-speed);
+}
+.hero-content .btn-shop-now:hover {
+    background-color: #333;
+    color: #fff;
+}
+.hero-stats {
     display: flex;
     gap: 30px;
     margin-top: 40px;
     border-top: 1px solid var(--border-color);
     padding-top: 30px;
-  }
-  .hero-stats .stat p {
+}
+.hero-stats .stat p {
     font-size: 2.2rem;
     font-weight: 700;
     margin: 0;
-  }
-  .hero-stats .stat span {
+}
+.hero-stats .stat span {
     color: var(--text-secondary);
-  }
-  .hero-image {
+}
+.hero-image {
     min-height: 700px;
-    background-image: url('https://i.imgur.com/r62D9d1.png');
-    background-size: cover;
-    background-position: center;
-  }
-  
-  /* --- Brands Section --- */
-  .brands {
+    width: 100%;
+    object-fit: cover;
+}
+
+/* --- 2. Brands Section --- */
+.brands {
     padding: 40px 0;
     background-color: #000;
-  }
-  .brand-slider .brand-item img {
+}
+.brand-slider .brand-item img {
     max-height: 25px;
     width: auto;
-    filter: brightness(0) invert(1);
-    opacity: 0.9;
-  }
-  
-  /* --- Generic Product Section --- */
-  .product-section {
-    padding: 80px 0;
-  }
-  .product-section .section-header {
-      margin-bottom: 40px;
-  }
-  .product-card {
-    background-color: #f2f0f1;
-    border-radius: 20px;
+    filter: brightness(0) invert(1) grayscale(50%);
+    opacity: 0.8;
+    transition: all var(--transition-speed);
+}
+.brand-slider .brand-item img:hover {
+    filter: brightness(0) invert(1) grayscale(0%);
+    opacity: 1;
+}
+
+/* --- 3. Product Section (New Arrivals & Top Selling) --- */
+.product-section {
+    padding: 80px 0 40px;
+}
+.product-card {
+    background-color: #f7f7f7;
+    border-radius: var(--card-radius);
     overflow: hidden;
-    margin-bottom: 20px;
-  }
-  .product-card .product-image {
-      height: 280px;
-      width: 100%;
-      object-fit: cover;
-  }
-  .product-card .product-info {
-      padding: 20px;
-  }
-  .product-card .product-title {
-      font-weight: 600;
-      font-size: 1.1rem;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-  }
-  .product-card .ratting {
-      color: #ffc633;
-      font-size: 0.9rem;
-  }
-  .product-card .product-price {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-top: 10px;
-  }
-  .product-card .current-price {
-      font-weight: 700;
-      font-size: 1.3rem;
-  }
-  .product-card .original-price {
-      text-decoration: line-through;
-      color: var(--text-secondary);
-  }
-  .product-card .discount-badge {
-      background-color: #ff333320;
-      color: #ff3333;
-      padding: 2px 10px;
-      border-radius: 20px;
-      font-size: 0.8rem;
-      font-weight: 600;
-  }
-  .view-all-btn {
-      display: block;
-      width: 200px;
-      margin: 40px auto 0;
-      padding: 12px 20px;
-      border: 1px solid var(--border-color);
-      border-radius: 30px;
-      text-align: center;
-  }
-
-  /* --- Dress Style Section --- */
-  .style-section {
-      padding: 80px 0;
-  }
-  .style-wrapper {
-      background-color: #f2f0f1;
-      border-radius: 40px;
-      padding: 40px;
-  }
-  .style-item {
-      border-radius: 20px;
-      background-size: cover;
-      background-position: center;
-      padding: 25px;
-      color: var(--text-primary);
-      font-size: 1.8rem;
-      font-weight: 700;
-  }
-  .style-grid-left .style-item:first-child {
-      min-height: 280px;
-      margin-bottom: 20px;
-  }
-  .style-grid-left .style-item:last-child {
-      min-height: 280px;
-  }
-   .style-grid-right .style-item {
-      min-height: 580px;
-   }
-   
-  /* --- Reviews Section --- */
-  .reviews-section {
-      padding: 80px 0;
-  }
-  .reviews-section .section-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-  }
-   .slider-nav button {
-      background: none;
-      border: 1px solid var(--border-color);
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      margin-left: 10px;
-   }
-  .review-card {
-    border: 1px solid var(--border-color);
-    padding: 25px;
+    margin-bottom: 30px;
+    border: 1px solid transparent;
+    transition: all var(--transition-speed);
+}
+.product-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-medium);
+    border-color: var(--border-color);
+}
+.product-card .product-image-wrapper {
+    position: relative;
+    overflow: hidden;
+}
+.product-card .product-image {
+    height: 320px;
+    width: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+.product-card:hover .product-image {
+    transform: scale(1.05);
+}
+.product-card .product-info {
+    padding: 20px;
+}
+.product-card .product-title {
+    font-weight: 600;
+    font-size: 1.1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.product-card .ratting {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+.product-card .ratting .fa-star {
+    color: #ffc633;
+}
+.product-card .product-price {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+.product-card .current-price {
+    font-weight: 700;
+    font-size: 1.3rem;
+}
+.product-card .original-price {
+    text-decoration: line-through;
+    color: var(--text-secondary);
+}
+.product-card .discount-badge {
+    background-color: #ff333320;
+    color: #ff3333;
+    padding: 2px 10px;
     border-radius: 20px;
-    margin: 0 10px;
-  }
-  .review-card .stars { color: #ffc633; }
-  .review-card .reviewer { font-weight: 700; margin-top: 15px; }
-  .review-card .reviewer .fa-check-circle { color: #33aaff; }
-  .review-card p { color: var(--text-secondary); margin-top: 10px; }
-
-  /* --- Newsletter Section --- */
-  .newsletter-section {
-    background-color: #000;
-    color: #fff;
-    padding: 60px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+.product-card .add-to-cart-btn {
+    position: absolute;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    opacity: 0;
+    background-color: #fff;
+    color: #000;
+    padding: 10px 25px;
     border-radius: 20px;
-    margin: 80px 0;
-  }
-  .newsletter-section h1 {
-    font-size: 2.8rem;
-    color: #fff;
-    line-height: 1.3;
-  }
-  .newsletter-form .input-group {
-      background-color: #fff;
-      padding: 8px;
-      border-radius: 30px;
-  }
-  .newsletter-form .form-control, .newsletter-form .input-group-text {
-      background: transparent;
-      border: none;
-      color: var(--text-primary);
-  }
-  .newsletter-form .btn-subscribe {
-      background-color: #fff;
-      color: #000;
-      border-radius: 30px;
-      padding: 10px 25px;
-      font-weight: 600;
-  }
+    font-weight: 600;
+    transition: all var(--transition-speed);
+    box-shadow: var(--shadow-light);
+}
+.product-card:hover .add-to-cart-btn {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
 
-  /* --- Responsive --- */
-  @media (max-width: 991px) {
-    .style-grid-right .style-item { min-height: 400px; }
-    .style-grid-left .style-item { min-height: 190px; }
-    .newsletter-section h1 { font-size: 2rem; }
-  }
-  @media (max-width: 767px) {
-    .hero-content { text-align: center; }
-    .hero-image { min-height: 400px; }
-    .style-grid-right { margin-top: 20px; }
-    .newsletter-section { text-align: center; padding: 40px 20px; }
-    .newsletter-form { margin-top: 30px; }
-  }
-  /* --- FANCY Dress Style Section --- */
+/* --- 4. Category / Dress Style Section --- */
 .style-section-fancy {
     padding: 80px 0;
 }
-.style-section-fancy .section-header {
-    margin-bottom: 40px;
-}
 .style-grid {
     display: grid;
-    /* Creates a responsive grid with a minimum item width of 280px */
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 25px;
 }
@@ -253,29 +225,25 @@
     position: relative;
     display: block;
     min-height: 450px;
-    border-radius: 20px;
-    overflow: hidden; /* Important for border-radius on children */
+    border-radius: var(--card-radius);
+    overflow: hidden;
     background-size: cover;
     background-position: center;
-    transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); /* Smooth transition */
+    transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 .style-card::after {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    /* Gradient overlay that appears on hover */
-    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
     opacity: 0;
     transition: opacity 0.5s ease;
 }
 .style-card:hover {
-    transform: scale(1.03); /* Zoom effect */
+    transform: scale(1.03);
 }
 .style-card:hover::after {
-    opacity: 1; /* Show gradient on hover */
+    opacity: 1;
 }
 .card-content {
     position: absolute;
@@ -289,26 +257,120 @@
 .card-content h3 {
     font-size: 2rem;
     font-weight: 700;
-    /* Animation setup */
     transform: translateY(20px);
     opacity: 0;
     transition: transform 0.4s ease-out 0.1s, opacity 0.4s ease-out 0.1s;
 }
 .style-card:hover .card-content h3 {
-    transform: translateY(0); /* Animate text into view */
+    transform: translateY(0);
     opacity: 1;
 }
 .card-content p {
     font-size: 1rem;
     font-weight: 500;
-    /* Animation setup */
     transform: translateY(20px);
     opacity: 0;
     transition: transform 0.5s ease-out 0.2s, opacity 0.5s ease-out 0.2s;
 }
 .style-card:hover .card-content p {
-    transform: translateY(0); /* Animate text into view */
+    transform: translateY(0);
     opacity: 1;
+}
+
+/* --- 5. Reviews Section --- */
+.reviews-section {
+    padding: 80px 0;
+}
+.reviews-section .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.slider-nav button {
+    background: #fff;
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    margin-left: 10px;
+    transition: all var(--transition-speed);
+}
+.slider-nav button:hover {
+    background-color: var(--text-primary);
+    color: #fff;
+}
+.review-card {
+    border: 1px solid var(--border-color);
+    padding: 30px;
+    border-radius: var(--card-radius);
+    margin: 0 15px;
+    background-color: #fff;
+}
+.review-card .reviewer {
+    font-weight: 700;
+    margin-top: 15px;
+}
+.review-card .reviewer .fa-check-circle {
+    color: #33aaff;
+    margin-left: 5px;
+}
+.review-card p {
+    color: var(--text-secondary);
+    margin-top: 10px;
+    font-style: italic;
+}
+
+/* --- 6. Newsletter Section --- */
+.newsletter-section {
+    background-color: #000;
+    color: #fff;
+    padding: 60px;
+    border-radius: var(--card-radius);
+    margin: 80px 0;
+}
+.newsletter-section h1 {
+    font-size: 2.8rem;
+    color: #fff;
+    line-height: 1.3;
+}
+.newsletter-form .input-group {
+    background-color: #fff;
+    padding: 8px;
+    border-radius: 30px;
+}
+.newsletter-form .form-control, .newsletter-form .input-group-text {
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+}
+.newsletter-form .btn-subscribe {
+    background-color: #000;
+    color: #fff;
+    border-radius: 30px;
+    padding: 10px 25px;
+    font-weight: 600;
+    border: none;
+    transition: background-color var(--transition-speed);
+}
+.newsletter-form .btn-subscribe:hover {
+    background-color: #333;
+}
+
+/* --- 7. Responsive Media Queries --- */
+@media (max-width: 991px) {
+    .hero-content h1 { font-size: 3rem; }
+    .product-card .add-to-cart-btn { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .newsletter-section h1 { font-size: 2rem; }
+}
+@media (max-width: 767px) {
+    .hero-content { text-align: center; }
+    .hero-content p { margin-left: auto; margin-right: auto; }
+    .hero-content .btn-shop-now { margin: 0 auto; }
+    .hero-stats { justify-content: center; }
+    .hero-image { min-height: 400px; }
+    .newsletter-section { text-align: center; padding: 40px 20px; }
+    .newsletter-form { margin-top: 30px; }
+    .style-grid { grid-template-columns: 1fr; }
 }
 
 </style>
@@ -319,57 +381,52 @@
         <div class="container-fluid">
             <div class="row align-items-center">
                 <div class="col-lg-6 order-lg-1 order-2">
-                    <div class="hero-content" data-aos="fade-right">
-                        <h1>FIND CLOTHES<br>THAT MATCHES<br>YOUR STYLE</h1>
-                        <p>Browse through our diverse range of meticulously crafted garments, designed to bring out your individuality and cater to your sense of style.</p>
-                        <a href="{% url 'myapp:products' %}" class="btn btn-shop-now">Shop Now</a>
-                        
-                        <div class="hero-stats">
+                    <div class="hero-content">
+                        <h1 data-aos="fade-up">FIND CLOTHES<br>THAT MATCHES<br>YOUR STYLE</h1>
+                        <p data-aos="fade-up" data-aos-delay="100">Browse through our diverse range of meticulously crafted garments, designed to bring out your individuality and cater to your sense of style.</p>
+                        <a href="{% url 'myapp:products' %}" class="btn btn-shop-now" data-aos="fade-up" data-aos-delay="200">Shop Now</a>
+                        <div class="hero-stats" data-aos="fade-up" data-aos-delay="300">
                             <div class="stat">
-                                <p><span class="counter">50</span>+</p>
+                                <p><span class="counter">200</span>+</p>
                                 <span>International Brands</span>
                             </div>
                             <div class="stat">
-                                <p><span class="counter">1500</span>+</p>
+                                <p><span class="counter">2,000</span>+</p>
                                 <span>High-Quality Products</span>
                             </div>
                             <div class="stat">
-                                <p><span class="counter">3500</span>+</p>
+                                <p><span class="counter">30,000</span>+</p>
                                 <span>Happy Customers</span>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-6 order-lg-2 order-1 p-0">
-                    <div class="hero-image" data-aos="fade-left">
-                        <img src="{% static 'img/heroImage.webp' %}" alt="Models showcasing clothes">
-                    </div>
+                    <img src="{% static 'img/heroImage.webp' %}" alt="Models showcasing clothes" class="hero-image" data-aos="fade-left">
                 </div>
             </div>
         </div>
     </section>
 
-  <section class="brands" data-aos="fade-up">
-    <div class="container-fluid">
-        <div class="brand-slider">
-            
-            {% for brand in brands %}
-                <div class="brand-item">
-                    {% if brand.image %}
-                        <img src="{{ brand.image.url }}" alt="{{ brand.name }}">
-                    {% endif %}
-                </div>
-            {% empty %}
-                <div class="brand-item"><img src="https://i.imgur.com/JJd2a13.png" alt="Versace"></div>
-                <div class="brand-item"><img src="https://i.imgur.com/wSThdC0.png" alt="Zara"></div>
-                <div class="brand-item"><img src="https://i.imgur.com/nRh9x88.png" alt="Gucci"></div>
-                <div class="brand-item"><img src="https://i.imgur.com/uT3f2rO.png" alt="Prada"></div>
-                <div class="brand-item"><img src="https://i.imgur.com/gK9p2rC.png" alt="Calvin Klein"></div>
-            {% endfor %}
-
+    <section class="brands" data-aos="fade-up">
+        <div class="container-fluid">
+            <div class="brand-slider">
+                {% for brand in brands %}
+                    <div class="brand-item">
+                        {% if brand.image %}
+                            <img src="{{ brand.image.url }}" alt="{{ brand.name }}">
+                        {% endif %}
+                    </div>
+                {% empty %}
+                    <div class="brand-item"><img src="https://i.imgur.com/JJd2a13.png" alt="Versace"></div>
+                    <div class="brand-item"><img src="https://i.imgur.com/wSThdC0.png" alt="Zara"></div>
+                    <div class="brand-item"><img src="https://i.imgur.com/nRh9x88.png" alt="Gucci"></div>
+                    <div class="brand-item"><img src="https://i.imgur.com/uT3f2rO.png" alt="Prada"></div>
+                    <div class="brand-item"><img src="https://i.imgur.com/gK9p2rC.png" alt="Calvin Klein"></div>
+                {% endfor %}
+            </div>
         </div>
-    </div>
-</section>
+    </section>
 
     <section class="product-section" data-aos="fade-up">
         <div class="container-fluid">
@@ -378,9 +435,16 @@
                 {% for product in recent_products|slice:":4" %}
                 <div class="col-lg-3 col-md-6">
                     <div class="product-card">
-                        <a href="{% url 'myapp:product_detail' product.id %}">
-                           <img src="{{ product.image.url|default:'https://i.imgur.com/3pW3CqO.png' }}" alt="{{ product.name }}" class="product-image">
-                        </a>
+                        <div class="product-image-wrapper">
+                         <a href="{% url 'myapp:product_detail' product.id %}">
+    {% if product.image %}
+        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
+    {% else %}
+        <img src="https://i.imgur.com/3pW3CqO.png" alt="No image available" class="product-image">
+    {% endif %}
+</a>
+                            <a href="{% url 'myapp:add_to_cart' product.id %}" class="btn add-to-cart-btn">Add to Cart</a>
+                        </div>
                         <div class="product-info">
                             <h3 class="product-title"><a href="{% url 'myapp:product_detail' product.id %}">{{ product.name|default:'Product Name' }}</a></h3>
                             <div class="ratting"><i class="fa fa-star"></i> 4.5/5</div>
@@ -395,17 +459,14 @@
                     </div>
                 </div>
                 {% empty %}
-                <div class="col-lg-3 col-md-6"><div class="product-card"><a href="#"><img src="https://i.imgur.com/3pW3CqO.png" alt="T-Shirt" class="product-image"></a><div class="product-info"><h3 class="product-title"><a href="#">T-shirt with Tape Details</a></h3><div class="ratting"><i class="fa fa-star"></i> 4.5/5</div><div class="product-price"><span class="current-price">$120</span></div></div></div></div>
-                <div class="col-lg-3 col-md-6"><div class="product-card"><a href="#"><img src="https://i.imgur.com/v2ZXw0C.png" alt="Jeans" class="product-image"></a><div class="product-info"><h3 class="product-title"><a href="#">Skinny Fit Jeans</a></h3><div class="ratting"><i class="fa fa-star"></i> 3.5/5</div><div class="product-price"><span class="current-price">$240</span><span class="original-price"><del>$260</del></span><span class="discount-badge">-20%</span></div></div></div></div>
-                <div class="col-lg-3 col-md-6"><div class="product-card"><a href="#"><img src="https://i.imgur.com/Q33crxI.png" alt="Shirt" class="product-image"></a><div class="product-info"><h3 class="product-title"><a href="#">Checkered Shirt</a></h3><div class="ratting"><i class="fa fa-star"></i> 4.5/5</div><div class="product-price"><span class="current-price">$180</span></div></div></div></div>
-                <div class="col-lg-3 col-md-6"><div class="product-card"><a href="#"><img src="https://i.imgur.com/rS2Fk3s.png" alt="T-Shirt" class="product-image"></a><div class="product-info"><h3 class="product-title"><a href="#">Sleeve Striped T-shirt</a></h3><div class="ratting"><i class="fa fa-star"></i> 4.5/5</div><div class="product-price"><span class="current-price">$130</span><span class="original-price"><del>$160</del></span><span class="discount-badge">-30%</span></div></div></div></div>
+                <p>No new arrivals to show right now.</p>
                 {% endfor %}
             </div>
             <a href="{% url 'myapp:products' %}" class="view-all-btn">View All</a>
         </div>
     </section>
 
-    <hr style="border-color: rgba(0,0,0,0.1); margin: 0 6%;">
+    <hr>
 
     <section class="product-section" data-aos="fade-up">
         <div class="container-fluid">
@@ -414,12 +475,19 @@
                  {% for product in featured_products|slice:":4" %}
                 <div class="col-lg-3 col-md-6">
                     <div class="product-card">
-                        <a href="{% url 'myapp:product_detail' product.id %}">
-                           <img src="{{ product.image.url|default:'https://i.imgur.com/GjvE3rM.png' }}" alt="{{ product.name }}" class="product-image">
-                        </a>
+                       <div class="product-image-wrapper">
+                           <a href="{% url 'myapp:product_detail' product.id %}">
+    {% if product.image %}
+        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
+    {% else %}
+        <img src="https://i.imgur.com/3pW3CqO.png" alt="No image available" class="product-image">
+    {% endif %}
+</a>
+                            <a href="{% url 'myapp:add_to_cart' product.id %}" class="btn add-to-cart-btn">Add to Cart</a>
+                        </div>
                         <div class="product-info">
                             <h3 class="product-title"><a href="{% url 'myapp:product_detail' product.id %}">{{ product.name|default:'Product Name' }}</a></h3>
-                            <div class="ratting"><i class="fa fa-star"></i> 4.5/5</div>
+                            <div class="ratting"><i class="fa fa-star"></i> 4.8/5</div>
                             <div class="product-price">
                                 <span class="current-price">₦{{ product.price|default:'210' }}</span>
                             </div>
@@ -427,90 +495,70 @@
                     </div>
                 </div>
                 {% empty %}
-                 <div class="col-lg-3 col-md-6"><div class="product-card"><a href="#"><img src="https://i.imgur.com/GjvE3rM.png" alt="Shirt" class="product-image"></a><div class="product-info"><h3 class="product-title"><a href="#">Vertical Striped Shirt</a></h3><div class="ratting"><i class="fa fa-star"></i> 5.0/5</div><div class="product-price"><span class="current-price">$212</span><span class="original-price"><del>$232</del></span><span class="discount-badge">-20%</span></div></div></div></div>
-                 <div class="col-lg-3 col-md-6"><div class="product-card"><a href="#"><img src="https://i.imgur.com/L8a1qg0.png" alt="T-shirt" class="product-image"></a><div class="product-info"><h3 class="product-title"><a href="#">Courage Graphic T-shirt</a></h3><div class="ratting"><i class="fa fa-star"></i> 4.0/5</div><div class="product-price"><span class="current-price">$145</span></div></div></div></div>
-                 <div class="col-lg-3 col-md-6"><div class="product-card"><a href="#"><img src="https://i.imgur.com/s6E6v1k.png" alt="Shorts" class="product-image"></a><div class="product-info"><h3 class="product-title"><a href="#">Loose Fit Bermuda Shorts</a></h3><div class="ratting"><i class="fa fa-star"></i> 3.0/5</div><div class="product-price"><span class="current-price">$80</span></div></div></div></div>
-                 <div class="col-lg-3 col-md-6"><div class="product-card"><a href="#"><img src="https://i.imgur.com/xXT14ve.png" alt="Jeans" class="product-image"></a><div class="product-info"><h3 class="product-title"><a href="#">Faded Skinny Jeans</a></h3><div class="ratting"><i class="fa fa-star"></i> 4.5/5</div><div class="product-price"><span class="current-price">$210</span></div></div></div></div>
+                <p>No top selling products to show right now.</p>
                 {% endfor %}
             </div>
             <a href="{% url 'myapp:products' %}" class="view-all-btn">View All</a>
         </div>
     </section>
 
-   
-<section class="style-section-fancy" data-aos="fade-up">
-    <div class="container-fluid">
-        <div class="section-header">
-            <h1>BROWSE DIFFERENT CATEGORY </h1>
+    <section class="style-section-fancy" data-aos="fade-up">
+        <div class="container-fluid">
+            <div class="section-header">
+                <h1>BROWSE BY DRESS STYLE</h1>
+            </div>
+            <div class="style-grid">
+                {% for cat in categories|slice:":4" %}
+                <a href="{% url 'myapp:products' %}?category={{ cat.slug }}" 
+                   class="style-card" 
+                   style="background-image: url('{{ cat.image.url|default:'https://i.imgur.com/4hZyiV3.png' }}');">
+                    <div class="card-content">
+                        <h3>{{ cat.name }}</h3>
+                        <p>Shop Now &rarr;</p>
+                    </div>
+                </a>
+                {% empty %}
+                <p>No categories to display.</p>
+                {% endfor %}
+            </div>
         </div>
-        <div class="style-grid">
-            
-            {% for cat in categories|slice:":3" %}
-            <a href="{% url 'myapp:products' %}?category={{ cat.slug }}" 
-               class="style-card" 
-               style="background-image: url('{{ cat.image.url }}');">
-                <div class="card-content">
-                    <h3>{{ cat.name }}</h3>
-                    <p>Shop Now &rarr;</p>
-                </div>
-            </a>
-            {% empty %}
-            <a href="#" class="style-card" style="background-image: url('https://i.imgur.com/4hZyiV3.png');">
-                <div class="card-content"><h3>Casual</h3><p>Shop Now &rarr;</p></div>
-            </a>
-            <a href="#" class="style-card" style="background-image: url('https://i.imgur.com/1GkHi2T.png');">
-                <div class="card-content"><h3>Formal</h3><p>Shop Now &rarr;</p></div>
-            </a>
-            <a href="#" class="style-card" style="background-image: url('https://i.imgur.com/a4aQy6L.png');">
-                <div class="card-content"><h3>Party</h3><p>Shop Now &rarr;</p></div>
-            </a>
-            <a href="#" class="style-card" style="background-image: url('https://i.imgur.com/s46dCjA.png');">
-                <div class="card-content"><h3>Gym</h3><p>Shop Now &rarr;</p></div>
-            </a>
-            {% endfor %}
+    </section>
 
-        </div>
-    </div>
-</section>
-<section class="reviews-section" data-aos="fade-up">
-    <div class="container-fluid">
-        <div class="section-header">
-            <h1>OUR HAPPY CUSTOMERS</h1>
-            <div class="slider-nav">
-                <button class="prev-arrow"><i class="fas fa-arrow-left"></i></button>
-                <button class="next-arrow"><i class="fas fa-arrow-right"></i></button>
-            </div>
-        </div>
-        
-        <div class="review-slider">
-            {% for review in reviews %}
-            <div class="review-card">
-                <div class="stars">
-                    {% for i in "12345"|make_list %}
-                        {% if forloop.counter <= review.rating %}
-                            <i class="fa fa-star"></i>
-                        {% else %}
-                            <i class="far fa-star"></i> {# 'far' is for an empty star #}
-                        {% endif %}
-                    {% endfor %}
+    <section class="reviews-section" data-aos="fade-up">
+        <div class="container-fluid">
+            <div class="section-header">
+                <h1>OUR HAPPY CUSTOMERS</h1>
+                <div class="slider-nav">
+                    <button class="prev-arrow"><i class="fas fa-arrow-left"></i></button>
+                    <button class="next-arrow"><i class="fas fa-arrow-right"></i></button>
                 </div>
-                <h4 class="reviewer">
-                    {{ review.reviewer_name }} 
-                    {% if review.is_verified %}
-                        <i class="fas fa-check-circle" style="color: #33aaff;"></i>
-                    {% endif %}
-                </h4>
-                <p>"{{ review.comment }}"</p>
             </div>
-            {% empty %}
+            <div class="review-slider">
+                {% for review in reviews %}
+                <div class="review-card">
+                    <div class="stars">
+                        {% for i in "12345"|make_list %}
+                            {% if forloop.counter <= review.rating %}
+                                <i class="fa fa-star"></i>
+                            {% else %}
+                                <i class="far fa-star"></i>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <h4 class="reviewer">
+                        {{ review.user.username }} 
+                        <i class="fas fa-check-circle"></i>
+                    </h4>
+                    <p>"{{ review.comment }}"</p>
+                </div>
+                {% empty %}
                 <div class="review-card">
                     <p class="text-center">Be the first to leave a review!</p>
                 </div>
-            {% endfor %}
+                {% endfor %}
+            </div>
         </div>
-        
-    </div>
-</section>
+    </section>
 
     <section class="container-fluid" data-aos="fade-up">
         <div class="newsletter-section">
@@ -525,7 +573,7 @@
                              <span class="input-group-text"><i class="fas fa-envelope"></i></span>
                              <input type="email" name="email" class="form-control" placeholder="Enter your email address" required>
                              <div class="input-group-append">
-                                <button type="submit" class="btn-subscribe">Subscribe to Newsletter</button>
+                                <button type="submit" class="btn-subscribe">Subscribe</button>
                              </div>
                          </div>
                     </form>
@@ -534,7 +582,6 @@
         </div>
     </section>
 {% endblock %}
-
 
 {% block extra_js %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.min.js"></script>
@@ -577,9 +624,9 @@ $(document).ready(function(){
   // COUNTER.JS INITIALIZATION
   $('.counter').counterUp({
     delay: 10,
-    time: 1200
+    time: 1500
   });
 
 });
 </script>
-{% endblock %} What is the capital of Nigeria?
+{% endblock %}

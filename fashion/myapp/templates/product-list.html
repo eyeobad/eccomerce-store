@@ -1,252 +1,224 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %}E Store - my account{% endblock %}
+{% block title %}All Products - Se_un{% endblock %}
 
 {% block extra_head %}
 <style>
-  /* Mobile-specific styles for product list page */
-  @media (max-width: 767px) {
-    /* Reduce font sizes and padding for list items */
-    .list-group-item {
-      font-size: 14px;
-      padding: 8px 10px;
+    :root {
+        --shop-bg: #f7f7f7;
+        --card-radius: 12px;
+        --shadow-light: 0 4px 15px rgba(0, 0, 0, 0.05);
+        --transition-speed: 0.3s ease;
     }
-    /* Adjust image sizes in sidebar and product items */
-    .list-group-item img,
-    .product-item img {
-        display: block;
-        margin: 0 auto;
+    .shop-container {
+        background-color: #fff;
     }
-    /* Adjust pagination links */
+    /* --- Filter Sidebar --- */
+    .filter-sidebar {
+        background-color: var(--shop-bg);
+        padding: 30px;
+        border-radius: var(--card-radius);
+    }
+    .filter-widget {
+        margin-bottom: 35px;
+    }
+    .filter-widget h4 {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #ddd;
+    }
+    .filter-widget .form-check {
+        margin-bottom: 10px;
+    }
+    .filter-widget .form-check-label {
+        cursor: pointer;
+    }
+    .price-range-inputs {
+        display: flex;
+        gap: 10px;
+    }
+    .btn-filter {
+        background-color: #000;
+        color: #fff;
+        border-radius: 8px;
+        width: 100%;
+        padding: 12px;
+        font-weight: 600;
+        transition: background-color var(--transition-speed);
+    }
+    .btn-filter:hover {
+        background-color: #333;
+        color: #fff;
+    }
+
+    /* --- Product Grid Header --- */
+    .shop-header {
+        background-color: var(--shop-bg);
+        padding: 20px 30px;
+        border-radius: var(--card-radius);
+        margin-bottom: 30px;
+    }
+    .shop-header .form-control {
+        max-width: 200px;
+    }
+
+    /* --- Product Card (Consistent with Homepage) --- */
+    .product-card {
+        background-color: #fff;
+        border-radius: var(--card-radius);
+        overflow: hidden;
+        margin-bottom: 30px;
+        border: 1px solid #f0f0f0;
+        transition: all var(--transition-speed);
+    }
+    .product-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
+    .product-card .product-image {
+        height: 280px;
+        width: 100%;
+        object-fit: cover;
+    }
+    .product-card .product-info { padding: 20px; }
+    .product-card .product-title { font-weight: 600; font-size: 1.1rem; }
+    .product-card .ratting { color: #ffc633; }
+    .product-card .current-price { font-weight: 700; font-size: 1.3rem; }
+    
+    /* --- Pagination --- */
+    .pagination .page-item.active .page-link {
+        background-color: #000;
+        border-color: #000;
+    }
     .pagination .page-link {
-      font-size: 14px;
-      padding: 6px 10px;
+        color: #000;
     }
-    /* Adjust sidebar nav links */
-    .navbar-nav .nav-link {
-      font-size: 14px;
-      padding: 6px 8px;
-    }
-    /* Reduce spacing in product item title and price */
-    .product-title a,
-    .product-price h3 {
-      font-size: 14px;
-    }
-  }
 </style>
 {% endblock extra_head %}
 
 {% block content %}
-<div class="container my-4">
-  <h2 class="mb-4">Product List</h2>
+<div class="shop-container">
+    <div class="container-fluid py-5">
+        <div class="row">
+            <div class="col-lg-3">
+                <div class="filter-sidebar">
+                    <form method="get">
+                        <div class="filter-widget">
+                            <h4>Search</h4>
+                            <input type="text" name="q" class="form-control" placeholder="Product name..." value="{{ request.GET.q }}">
+                        </div>
 
-  <!-- Main Product List -->
-  <div class="row">
-    <div class="col-lg-8">
-      <div class="row">
-        <!-- Product View Top -->
-        <div class="col-md-12">
-            <div class="product-view-top">
-              <div class="row">
-                <div class="col-md-4">
-                  <div class="product-short">
-                    <div class="dropdown">
-                      <div class="dropdown-toggle" data-toggle="dropdown">Product short by</div>
-                      <div class="dropdown-menu dropdown-menu-right">
-                        {% for min_val, max_val in price_ranges %}
-                          <a
-                            href="?min={{ min_val }}&max={{ max_val }}"
-                            class="dropdown-item"
-                          >
-                            ₦{{ min_val }} to ₦{{ max_val }}
-                          </a>
+                        <div class="filter-widget">
+                            <h4>Categories</h4>
+                            {% for category in categories %}
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="category" value="{{ category.slug }}" id="cat-{{ category.id }}" {% if category.slug in selected_categories %}checked{% endif %}>
+                                    <label class="form-check-label" for="cat-{{ category.id }}">
+                                        {{ category.name }}
+                                    </label>
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="filter-widget">
+                            <h4>Brands</h4>
+                            {% for brand in brands %}
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="brand" value="{{ brand.id }}" id="brand-{{ brand.id }}" {% if brand.id|stringformat:"s" in selected_brands %}checked{% endif %}>
+                                    <label class="form-check-label" for="brand-{{ brand.id }}">
+                                        {{ brand.name }}
+                                    </label>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="filter-widget">
+                            <h4>Price Range (₦)</h4>
+                            <div class="price-range-inputs">
+                                <input type="number" name="min_price" class="form-control" placeholder="Min" value="{{ request.GET.min_price }}">
+                                <input type="number" name="max_price" class="form-control" placeholder="Max" value="{{ request.GET.max_price }}">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-filter">Apply Filters</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="col-lg-9">
+                <div class="shop-header d-flex justify-content-between align-items-center flex-wrap">
+                    <h3 class="mb-0">All Products</h3>
+                    <form method="get" class="d-flex align-items-center">
+                        {% for cat_slug in request.GET.getlist.category %}<input type="hidden" name="category" value="{{ cat_slug }}">{% endfor %}
+                        {% for brand_id in request.GET.getlist.brand %}<input type="hidden" name="brand" value="{{ brand_id }}">{% endfor %}
+                        
+                        <label for="sort" class="mr-2 mb-0">Sort by:</label>
+                        <select name="sort" id="sort" class="form-control" onchange="this.form.submit()">
+                            <option value="latest" {% if request.GET.sort == 'latest' or not request.GET.sort %}selected{% endif %}>Latest</option>
+                            <option value="price_low_high" {% if request.GET.sort == 'price_low_high' %}selected{% endif %}>Price: Low to High</option>
+                            <option value="price_high_low" {% if request.GET.sort == 'price_high_low' %}selected{% endif %}>Price: High to Low</option>
+                        </select>
+                    </form>
+                </div>
+
+                <div class="row">
+                    {% for product in page_obj %}
+                        <div class="col-lg-4 col-md-6">
+                            <div class="product-card">
+                                <a href="{% url 'myapp:product_detail' product.id %}">
+                                   <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'img/default-product.jpg' %}{% endif %}" alt="{{ product.name }}" class="product-image">
+                                </a>
+                                <div class="product-info">
+                                    <h3 class="product-title"><a href="{% url 'myapp:product_detail' product.id %}">{{ product.name }}</a></h3>
+                                    <div class="ratting">
+                                        {% with rating=product.average_rating|default:4 %}
+                                        {% for i in "12345"|make_list %}{% if forloop.counter <= rating %}<i class="fa fa-star"></i>{% else %}<i class="far fa-star text-muted"></i>{% endif %}{% endfor %}
+                                        {% endwith %}
+                                    </div>
+                                    <div class="product-price mt-2">
+                                        <span class="current-price">₦{{ product.price|floatformat:2 }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <div class="col-12">
+                            <p class="text-center">No products found matching your criteria.</p>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <nav class="mt-5" aria-label="Page navigation">
+                    {% if page_obj.has_other_pages %}
+                    <ul class="pagination justify-content-center">
+                        
+                        {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Previous</a>
+                            </li>
+                        {% endif %}
+                        
+                        {% for num in page_obj.paginator.page_range %}
+                            {% if page_obj.number == num %}
+                                <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                            {% else %}
+                                <li class="page-item"><a class="page-link" href="?page={{ num }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">{{ num }}</a></li>
+                            {% endif %}
                         {% endfor %}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <!-- Optionally add another column if needed -->
-              </div>
-            </div>
-          </div>
-          
-        
-        <!-- Dynamic Product Items -->
-        {% for product in products %}
-          <div class="col-md-4">
-            <div class="product-item">
-              <div class="product-title">
-                <a href="{% url 'myapp:product_detail' product.id %}">{{ product.name }}</a>
-                <div class="ratting">
-                  {% for star in "12345"|make_list %}
-                    <i class="fa fa-star"></i>
-                  {% endfor %}
-                </div>
-                <div class="product-category">
-                  <small>Category: <strong>{{ product.category.name }}</strong></small>
-                </div>
-              </div>
-              <div class="product-image">
-                <a href="{% url 'myapp:product_detail' product.id %}">
-                  {% if product.image %}
-                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
-                  {% else %}
-                    <img src="{% static 'img/default-product.jpg' %}" alt="Default Product">
-                  {% endif %}
-                </a>
-                <div class="product-action">
-                  <!-- Additional actions like wishlist or view details can go here -->
-                  <a href="#"><i class="fa fa-heart"></i></a>
-                  <a href="#"><i class="fa fa-search"></i></a>
-                </div>
-              </div>
-              <div class="product-price">
-                <h3><span>₦</span>{{ product.price }}</h3>
-                <!-- Add to Cart button linking to persistent cart logic -->
-                <a class="btn" href="{% url 'myapp:add_to_cart' product.id %}">
-                  <i class="fa fa-shopping-cart"></i> Add to Cart
-                </a>
-              </div>
-            </div>
-          </div>
-        {% empty %}
-          <p>No products available.</p>
-        {% endfor %}
-        
-        <!-- Pagination Start -->
-        <div class="col-md-12">
-          {% if page_obj.has_other_pages %}
-            <nav aria-label="Page navigation">
-              <ul class="pagination justify-content-center">
-                {% if page_obj.has_previous %}
-                  <li class="page-item">
-                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}" tabindex="-1">Previous</a>
-                  </li>
-                {% else %}
-                  <li class="page-item disabled">
-                    <a class="page-link" href="#" tabindex="-1">Previous</a>
-                  </li>
-                {% endif %}
-                
-                {% for num in page_obj.paginator.page_range %}
-                  {% if page_obj.number == num %}
-                    <li class="page-item active">
-                      <a class="page-link" href="?page={{ num }}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}">{{ num }}</a>
-                    </li>
-                  {% else %}
-                    <li class="page-item">
-                      <a class="page-link" href="?page={{ num }}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}">{{ num }}</a>
-                    </li>
-                  {% endif %}
-                {% endfor %}
-                
-                {% if page_obj.has_next %}
-                  <li class="page-item">
-                    <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}">Next</a>
-                  </li>
-                {% else %}
-                  <li class="page-item disabled">
-                    <a class="page-link" href="#">Next</a>
-                  </li>
-                {% endif %}
-              </ul>
-            </nav>
-          {% endif %}
-        </div>
-        <!-- Pagination End -->
-      </div>
-    </div>
-    
-    <!-- Side Bar Start -->
-    <div class="col-lg-4 sidebar">
-      <div class="sidebar-widget category">
-        <h2 class="title">Category</h2>
-        <nav class="navbar bg-light">
-          <ul class="navbar-nav">
-            {% for category in categories %}
-              <li class="nav-item">
-                <a class="nav-link" href="?category={{ category.slug }}">
-                  <i class="fa fa-folder"></i> {{ category.name }}
-                </a>
-              </li>
-            {% empty %}
-              <li class="nav-item"><span>No categories found.</span></li>
-            {% endfor %}
-          </ul>
-        </nav>
-      </div>
-      
-      <div class="sidebar-widget widget-slider">
-        <div class="sidebar-slider normal-slider">
-          {% for slider_product in slider_products %}
-            <div class="product-item">
-              <div class="product-title">
-                <a href="{% url 'myapp:product_detail' slider_product.id %}">{{ slider_product.name }}</a>
-                <div class="ratting">
-                  {% for star in "12345"|make_list %}
-                    <i class="fa fa-star"></i>
-                  {% endfor %}
-                </div>
-              </div>
-              <div class="product-image">
-                <a href="{% url 'myapp:product_detail' slider_product.id %}">
-                  {% if slider_product.image %}
-                    <img src="{{ slider_product.image.url }}" alt="{{ slider_product.name }}">
-                  {% else %}
-                    <img src="{% static 'img/default-product.jpg' %}" alt="Default Product">
-                  {% endif %}
-                </a>
-                <div class="product-action">
-                  <a href="#"><i class="fa fa-cart-plus"></i></a>
-                  <a href="#"><i class="fa fa-heart"></i></a>
-                  <a href="#"><i class="fa fa-search"></i></a>
-                </div>
-              </div>
-              <div class="product-price">
-                <h3><span>₦</span>{{ slider_product.price }}</h3>
-                <a class="btn" href="{% url 'myapp:add_to_cart' slider_product.id %}">
-                  <i class="fa fa-shopping-cart"></i> Add to Cart
-                </a>
-              </div>
-            </div>
-          {% endfor %}
-        </div>
-      </div>
-      
-      <!-- Sidebar widget for brands -->
-<div class="sidebar-widget brands">
-    <h2 class="title">Our Brands</h2>
-    <ul>
-      {% for brand in brands %}
-        <li>
-          <a href="{% url 'myapp:products' %}?brand={{ brand.id }}">{{ brand.name }}</a>
-        </li>
-      {% empty %}
-        <li>No brands available.</li>
-      {% endfor %}
-    </ul>
-  </div>
-  
-  
-    </div>
-    <!-- End Side Bar -->
-  </div>
-</div>
-<!-- Product List End -->  
 
-<!-- Brand Start -->
-<div class="brand">
-  <div class="container-fluid">
-    <div class="brand-slider">
-      <div class="brand-item"><img src="{% static 'img/brand-1.png' %}" alt=""></div>
-      <div class="brand-item"><img src="{% static 'img/brand-2.png' %}" alt=""></div>
-      <div class="brand-item"><img src="{% static 'img/brand-3.png' %}" alt=""></div>
-      <div class="brand-item"><img src="{% static 'img/brand-4.png' %}" alt=""></div>
-      <div class="brand-item"><img src="{% static 'img/brand-5.png' %}" alt=""></div>
-      <div class="brand-item"><img src="{% static 'img/brand-6.png' %}" alt=""></div>
-    </div>
-  </div>
-</div>
-<!-- Brand End -->
+                        {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Next</a>
+                            </li>
+                        {% endif %}
 
+                    </ul>
+                    {% endif %}
+                </nav>
+                </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

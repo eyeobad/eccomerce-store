@@ -1,385 +1,292 @@
 {% extends "base.html" %}
 {% load static %}
 {% load widget_tweaks %}
-{% block title %}E Store - {{ product.name }}{% endblock %}
+
+{% block title %}{{ product.name }} - Se_un{% endblock %}
 
 {% block extra_head %}
 <style>
-  /* Mobile-specific styling for Product Detail Page */
-  @media (max-width: 767px) {
-    /* Overall adjustments */
-    body, h1, h2, h3, h4, h5, h6, p, label {
-      font-size: 14px;
+    /* === Product Detail Page Styles === */
+    .product-detail-section {
+        padding: 60px 0;
+        background-color: #fff;
     }
-    .container-fluid {
-      padding-left: 10px;
-      padding-right: 10px;
+
+    /* Image Gallery */
+    .product-gallery .main-image img {
+        width: 100%;
+        border-radius: 12px;
+        background-color: #f7f7f7;
     }
-    /* Product Detail Top adjustments */
-    .product-detail-top .col-md-5,
-    .product-detail-top .col-md-7 {
-      padding: 5px;
+    .product-thumbnails {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 15px;
+        margin-top: 15px;
     }
-    .product-detail-top h2 {
-      font-size: 18px;
-      margin-bottom: 10px;
+    .product-thumbnails .thumb img {
+        width: 100%;
+        border-radius: 8px;
+        border: 2px solid transparent;
+        cursor: pointer;
+        transition: border-color 0.3s ease;
+        background-color: #f7f7f7;
     }
-    .product-detail-top .ratting i {
-      font-size: 16px;
+    .product-thumbnails .thumb.active img,
+    .product-thumbnails .thumb:hover img {
+        border-color: #000;
     }
-    .product-detail-top .price p {
-      font-size: 16px;
+
+    /* Product Info */
+    .product-info h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
     }
-    .product-detail-top .quantity .qty input {
-      width: 70px;
-      padding: 5px;
-      font-size: 14px;
+    .product-info .rating-summary {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 15px 0;
+        color: #ffc633;
     }
-    .product-detail-top .action .btn {
-      font-size: 14px;
-      padding: 8px 12px;
-      margin-bottom: 5px;
+    .product-info .price {
+        font-size: 2rem;
+        font-weight: 700;
+        margin: 20px 0;
     }
-    /* Tabbed Details Section */
-    .product-detail-bottom .nav-pills li a {
-      font-size: 14px;
-      padding: 8px;
+    .product-info .price .original-price {
+        font-size: 1.2rem;
+        color: #aaa;
+        text-decoration: line-through;
+        margin-left: 15px;
     }
-    .product-detail-bottom .tab-content {
-      font-size: 14px;
-      padding: 10px 0;
+    .product-info .short-description {
+        color: var(--text-secondary);
+        line-height: 1.7;
+        font-size: 0.95rem;
     }
-    /* Related Products Section */
-    .product .section-header h1 {
-      font-size: 18px;
-      margin-bottom: 10px;
+
+    /* Variants (Color/Size) */
+    .variant-group { margin-top: 25px; }
+    .variant-group h4 { font-size: 1.1rem; font-weight: 600; margin-bottom: 10px; }
+    .color-swatches, .size-swatches { display: flex; gap: 10px; flex-wrap: wrap; }
+    .color-swatch {
+        width: 35px; height: 35px; border-radius: 50%; cursor: pointer;
+        border: 2px solid #fff; box-shadow: 0 0 0 1px #ddd;
+        transition: box-shadow 0.3s ease;
     }
-    .product-slider-3 .col-lg-3 {
-      padding: 5px;
+    .color-swatch.active, .color-swatch:hover { box-shadow: 0 0 0 2px #000; }
+    .size-swatch {
+        background-color: #f0f0f0; padding: 8px 18px; border-radius: 30px;
+        cursor: pointer; font-weight: 500;
+        transition: all 0.3s ease;
+        border: 1px solid transparent;
     }
-    .product-item {
-      margin-bottom: 15px;
+    .size-swatch.active, .size-swatch:hover { background-color: #000; color: #fff; }
+
+    /* Quantity & Actions */
+    .quantity-stepper {
+        display: flex; align-items: center; background-color: #f0f0f0;
+        border-radius: 30px; padding: 5px; width: fit-content;
     }
-    .product-item .product-title h3,
-    .product-item .product-title a {
-      font-size: 14px;
+    .quantity-stepper .btn {
+        background-color: #fff; border-radius: 50%; width: 40px; height: 40px;
+        display: flex; align-items: center; justify-content: center;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
     }
-    .product-item .product-price h3 {
-      font-size: 16px;
+    .quantity-stepper input {
+        width: 50px; text-align: center; background: transparent; border: none; font-weight: 600;
     }
-    .product-item .btn {
-      font-size: 14px;
-      padding: 8px 12px;
+    .add-to-cart-btn {
+        background-color: #000; color: #fff; border-radius: 30px; padding: 15px 40px;
+        font-weight: 600; transition: background-color 0.3s ease; flex-grow: 1; text-align: center;
     }
-    /* Sidebar adjustments (if needed) */
-    .sidebar-widget {
-      margin-bottom: 15px;
+    .add-to-cart-btn:hover { background-color: #333; color: #fff; }
+
+    /* Polished Tab Navigation */
+    .product-details-tabs { padding: 80px 0; border-top: 1px solid #eee; margin-top: 60px; }
+    .product-details-tabs .nav-pills { border-bottom: 1px solid #eee; }
+    .product-details-tabs .nav-pills .nav-link {
+        color: #888;
+        font-weight: 600;
+        font-size: 1.1rem;
+        padding: 10px 25px;
+        border-radius: 0;
+        border-bottom: 3px solid transparent;
+        margin-bottom: -2px;
     }
-  }
+    .product-details-tabs .nav-pills .nav-link.active {
+        color: #000;
+        background-color: transparent;
+        border-bottom-color: #000;
+    }
+    .tab-content { padding-top: 40px; }
+    .review-card-item { border-bottom: 1px solid #eee; padding: 25px 0; }
+
+    /* Custom Star Rating Form Styles */
+    .star-rating-form {
+        display: inline-flex;
+        flex-direction: row-reverse;
+        justify-content: flex-end;
+    }
+    .star-rating-form input[type="radio"] {
+        display: none;
+    }
+    .star-rating-form label {
+        font-size: 1.8rem;
+        color: #ddd;
+        cursor: pointer;
+        padding: 0 3px;
+        transition: color 0.2s ease;
+    }
+    .star-rating-form input[type="radio"]:checked ~ label,
+    .star-rating-form label:hover,
+    .star-rating-form label:hover ~ label {
+        color: #ffc633;
+    }
+    .add-review-form h4 {
+        font-weight: 600;
+        margin-bottom: 20px;
+    }
+    .add-review-form .form-control {
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        padding: 15px;
+    }
+    .add-review-form .form-control:focus {
+        border-color: #000;
+        box-shadow: 0 0 0 2px rgba(0,0,0,0.1);
+    }
 </style>
 {% endblock extra_head %}
 
 {% block content %}
-    <!-- Breadcrumb Start -->
-    {% include 'breadcrumb.html' %}
-    <!-- Breadcrumb End -->
+<div class="product-detail-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="product-gallery">
+                    <div class="main-image mb-3">
+                        <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'img/default-product.jpg' %}{% endif %}" alt="{{ product.name }}" id="mainProductImage">
+                    </div>
+                    <div class="product-thumbnails">
+                        <div class="thumb active"><img src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'img/default-product.jpg' %}{% endif %}" alt="Thumbnail 1"></div>
+                        </div>
+                </div>
+            </div>
 
-    <!-- Product Detail Start -->
-    <div class="product-detail">
-        <div class="container-fluid">
-            <div class="row">
-                <!-- Main Product Section -->
-                <div class="col-lg-8">
-                    <div class="product-detail-top">
-                        <div class="row align-items-center">
-                            <div class="col-md-5">
-                                {% if product.image %}
-                                    <div class="product-slider-single normal-slider">
-                                        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid">
-                                    </div>
-                                {% else %}
-                                    <img src="{% static 'img/default-product.jpg' %}" alt="{{ product.name }}" class="img-fluid">
-                                {% endif %}
-                            </div>
-                            <div class="col-md-7">
-                                <div class="product-content">
-                                    <div class="title">
-                                        <h2>{{ product.name }}</h2>
-                                    </div>
-                                    <div class="ratting">
-                                        {% for star in "12345"|make_list %}
-                                            <i class="fa fa-star"></i>
-                                        {% endfor %}
-                                    </div>
-                                    <div class="price">
-                                        <h4>Price:</h4>
-                                        <p>₦{{ product.price }}</p>
-                                    </div>
-                                    <div class="quantity">
-                                        <h4>Quantity:</h4>
-                                        <div class="qty" style="background-color: #fff;">
-                                            <button class="btn-minus"><i class="fa fa-minus"></i></button>
-                                            <input type="number" name="quantity" value="{{ cart_item_quantity }}" min="1" class="orange-qty">
-                                            <button class="btn-plus"><i class="fa fa-plus"></i></button>
-                                        </div>
-                                    </div>
-                                    <!-- Additional options like size and color can be added here -->
-                                    <div class="action">
-                                        <a class="btn" href="{% url 'myapp:add_to_cart' product.id %}">
-                                            <i class="fa fa-shopping-cart"></i> Add to Cart
-                                        </a>
-                                        <a class="btn" href="{% url 'myapp:add_to_cart' product.id %}?buy_now=1">
-                                            <i class="fa fa-shopping-bag"></i> Buy Now
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
+            <div class="col-lg-6">
+                <div class="product-info">
+                    <h1>{{ product.name }}</h1>
+                    <div class="rating-summary">
+                        <div class="stars">
+                            {% with rating=product.average_rating|default:4 %}
+                            {% for i in "12345"|make_list %}{% if forloop.counter <= rating %}<i class="fa fa-star"></i>{% else %}<i class="far fa-star text-muted"></i>{% endif %}{% endfor %}
+                            {% endwith %}
                         </div>
+                        <span>({{ reviews.count }})</span>
                     </div>
-                    
-                    <!-- Tabbed Details Section -->
-                    <div class="row product-detail-bottom">
-                        <div class="col-lg-12">
-                            <ul class="nav nav-pills nav-justified">
-                                <li class="nav-item">
-                                    <a class="nav-link active" data-toggle="pill" href="#description">Description</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" data-toggle="pill" href="#specification">Specification</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" data-toggle="pill" href="#reviews">Reviews</a>
-                                </li>
-                            </ul>
-    
-                            <div class="tab-content">
-                                <div id="description" class="container tab-pane active">
-                                    <h4>Product Description</h4>
-                                    <p>{{ product.description }}</p>
-                                </div>
-                                <div id="specification" class="container tab-pane fade">
-                                    <h4>Product Specification</h4>
-                                    <ul>
-                                        <li>Category: {{ product.category.name }}</li>
-                                        <!-- Add more specification details if needed -->
-                                    </ul>
-                                </div>
-                                <div id="reviews" class="container tab-pane fade">
-                                    <!-- Reviews Section: Implement as needed -->
-                                    <p>No reviews yet.</p>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="price">
+                        ₦{{ product.price|floatformat:2 }}
+                        <span class="original-price"><del>₦{{ product.price|add:1000|floatformat:2 }}</del></span>
                     </div>
-                    
-                    <!-- Related Products Section -->
-                    <div class="product">
-                        <div class="section-header">
-                            <h1>Related Products</h1>
-                        </div>
-    
-                        <div class="row align-items-center product-slider product-slider-3">
-                            {% for related in related_products %}
-                                <div class="col-lg-3">
-                                    <div class="product-item">
-                                        <div class="product-title">
-                                            <a href="{% url 'myapp:product_detail' related.pk %}">{{ related.name }}</a>
-                                            <div class="ratting">
-                                                {% for star in "12345"|make_list %}
-                                                    <i class="fa fa-star"></i>
-                                                {% endfor %}
-                                            </div>
-                                        </div>
-                                        <div class="product-image">
-                                            <a href="{% url 'myapp:product_detail' related.pk %}">
-                                                {% if related.image %}
-                                                    <img src="{{ related.image.url }}" alt="{{ related.name }}">
-                                                {% else %}
-                                                    <img src="{% static 'img/default-product.jpg' %}" alt="{{ related.name }}">
-                                                {% endif %}
-                                            </a>
-                                            <div class="product-action">
-                                                <a href="#"><i class="fa fa-cart-plus"></i></a>
-                                                <a href="#"><i class="fa fa-heart"></i></a>
-                                                <a href="#"><i class="fa fa-search"></i></a>
-                                            </div>
-                                        </div>
-                                        <div class="product-price">
-                                            <h3><span>₦</span>{{ related.price }}</h3>
-                                            <a class="btn" href="{% url 'myapp:product_detail' related.pk %}">
-                                                <i class="fa fa-shopping-cart"></i> Buy Now
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            {% empty %}
-                                <p>No related products available.</p>
-                            {% endfor %}
-                        </div>
+                    <p class="short-description">{{ product.description|truncatewords:25 }}</p>
+                    <hr>
+                    <div class="variant-group">
+                        <h4>Select Colors</h4>
+                        <div class="color-swatches"><div class="color-swatch active" style="background-color: #3a4855;"></div><div class="color-swatch" style="background-color: #c3a184;"></div></div>
+                    </div>
+                    <div class="variant-group">
+                        <h4>Choose Size</h4>
+                        <div class="size-swatches"><div class="size-swatch">S</div><div class="size-swatch active">M</div><div class="size-swatch">L</div><div class="size-swatch">XL</div></div>
+                    </div>
+                    <hr>
+                    <div class="d-flex align-items-center gap-3 mt-4">
+                        <div class="quantity-stepper"><button class="btn btn-minus"><i class="fa fa-minus"></i></button><input type="text" value="1"><button class="btn btn-plus"><i class="fa fa-plus"></i></button></div>
+                        <a href="#" class="btn add-to-cart-btn">Add To Cart</a>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="product-details-tabs">
+    <div class="container">
+        <ul class="nav nav-pills justify-content-center mb-5">
+            <li class="nav-item"><a class="nav-link active" data-toggle="pill" href="#details-tab">Product Details</a></li>
+            <li class="nav-item"><a class="nav-link" data-toggle="pill" href="#reviews-tab">Product Reviews ({{ reviews.count }})</a></li>
+        </ul>
+        <div class="tab-content">
+            <div id="details-tab" class="container tab-pane active"><br>
+                <p>{{ product.description }}</p>
+            </div>
+            <div id="reviews-tab" class="container tab-pane fade"><br>
+                {% for review in reviews %}
+                    <div class="review-card-item">
+                        <div class="d-flex justify-content-between">
+                            <strong>{{ review.user.username }}</strong>
+                            <div class="stars">{% for i in "12345"|make_list %}{% if forloop.counter <= review.rating %}<i class="fa fa-star text-warning"></i>{% else %}<i class="far fa-star text-muted"></i>{% endif %}{% endfor %}</div>
+                        </div>
+                        <small class="text-muted">{{ review.created_at|date:"F d, Y" }}</small>
+                        <p class="mt-2">"{{ review.comment }}"</p>
+                    </div>
+                {% empty %}
+                    <p class="text-center">There are no reviews yet. Be the first!</p>
+                {% endfor %}
                 
-                <!-- Sidebar Section -->
-                <div class="col-lg-4 sidebar">
-                    <div class="sidebar-widget category">
-                        <h2 class="title">Category</h2>
-                        <nav class="navbar bg-light">
-                            <ul class="navbar-nav">
-                                {% for category in categories %}
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="?category={{ category.slug }}">
-                                            <i class="fa fa-folder"></i> {{ category.name }}
-                                        </a>
-                                    </li>
-                                {% empty %}
-                                    <li class="nav-item"><span>No categories found.</span></li>
-                                {% endfor %}
-                            </ul>
-                        </nav>
-                    </div>
-                    
-                    <div class="sidebar-widget widget-slider">
-                        <div class="sidebar-slider normal-slider">
-                            {% for slider_product in slider_products %}
-                            <div class="product-item">
-                                <div class="product-title">
-                                    <a href="{% url 'myapp:product_detail' slider_product.id %}">{{ slider_product.name }}</a>
-                                    <div class="ratting">
-                                        {% for star in "12345"|make_list %}
-                                            <i class="fa fa-star"></i>
-                                        {% endfor %}
-                                    </div>
-                                </div>
-                                <div class="product-image">
-                                    <a href="{% url 'myapp:product_detail' slider_product.id %}">
-                                        {% if slider_product.image %}
-                                            <img src="{{ slider_product.image.url }}" alt="{{ slider_product.name }}">
-                                        {% else %}
-                                            <img src="{% static 'img/default-product.jpg' %}" alt="Default Product">
-                                        {% endif %}
-                                    </a>
-                                    <div class="product-action">
-                                        <a href="#"><i class="fa fa-cart-plus"></i></a>
-                                        <a href="#"><i class="fa fa-heart"></i></a>
-                                        <a href="#"><i class="fa fa-search"></i></a>
-                                    </div>
-                                </div>
-                                <div class="product-price">
-                                    <h3><span>₦</span>{{ slider_product.price }}</h3>
-                                    <a class="btn" href="{% url 'myapp:product_detail' slider_product.id %}">
-                                        <i class="fa fa-shopping-cart"></i> Buy Now
-                                    </a>
+                {% if user.is_authenticated %}
+                    <div class="add-review-form mt-5">
+                        <h4 class="mb-4">Write a Review</h4>
+                        <form action="{% url 'myapp:add_review' product.id %}" method="post">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label class="mb-2">Your Rating</label>
+                                <div class="star-rating-form">
+                                    {% for radio in review_form.rating %}
+                                        <input type="radio" name="{{ radio.name }}" id="id_rating_{{ radio.choice_value }}" value="{{ radio.choice_value }}" required>
+                                        <label for="id_rating_{{ radio.choice_value }}"><i class="fas fa-star"></i></label>
+                                    {% endfor %}
                                 </div>
                             </div>
-                            {% endfor %}
-                        </div>
+                            <div class="form-group">
+                                <label for="id_comment">Your Comment</label>
+                                {{ review_form.comment|add_class:"form-control"|attr:"rows:4"|attr:"placeholder:Write your review here..." }}
+                            </div>
+                            <button type="submit" class="btn btn-dark mt-3 px-4 py-2">Submit Review</button>
+                        </form>
                     </div>
-                    
-                    <div class="sidebar-widget brands">
-                        <h2 class="title">Our Brands</h2>
-                        <ul>
-                            <li><a href="#">Nulla </a><span>(45)</span></li>
-                            <li><a href="#">Curabitur </a><span>(34)</span></li>
-                            <li><a href="#">Nunc </a><span>(67)</span></li>
-                            <li><a href="#">Ullamcorper</a><span>(74)</span></li>
-                            <li><a href="#">Fusce </a><span>(89)</span></li>
-                            <li><a href="#">Sagittis</a><span>(28)</span></li>
-                        </ul>
-                    </div>
-                    
-                    <div class="sidebar-widget tag">
-                        <h2 class="title">Tags Cloud</h2>
-                        <a href="#">Lorem ipsum</a>
-                        <a href="#">Vivamus</a>
-                        <a href="#">Phasellus</a>
-                        <a href="#">pulvinar</a>
-                        <a href="#">Curabitur</a>
-                        <a href="#">Fusce</a>
-                        <a href="#">Sem quis</a>
-                        <a href="#">Mollis metus</a>
-                        <a href="#">Sit amet</a>
-                        <a href="#">Vel posuere</a>
-                        <a href="#">orci luctus</a>
-                        <a href="#">Nam lorem</a>
-                    </div>
-                </div>
-                <!-- End Sidebar -->
+                {% else %}
+                    <p class="mt-4 text-center"><a href="{% url 'myapp:login' %}?next={{ request.path }}">Log in</a> to write a review.</p>
+                {% endif %}
             </div>
         </div>
     </div>
-    <!-- Product Detail End -->
+</div>
+{% endblock %}
 
-    
+{% block extra_js %}
+<script>
+$(document).ready(function(){
+    // Image gallery logic
+    $('.product-thumbnails .thumb').on('click', function(){
+        $('.product-thumbnails .thumb').removeClass('active');
+        $(this).addClass('active');
+        var newImageSrc = $(this).find('img').attr('src');
+        $('#mainProductImage').attr('src', newImageSrc);
+    });
 
-    <!-- <div class="review" data-aos="fade-up">
-        <div class="container-fluid">
-            <div class="row align-items-center review-slider normal-slider">
-                <div class="col-md-6">
-                    <div class="review-slider-item">
-                        <div class="review-img">
-                            <img src="{% static 'img/review-1.jpg' %}" alt="Image">
-                        </div>
-                        <div class="review-text">
-                            <h2>Customer Name</h2>
-                            <h3>Profession</h3>
-                            <div class="ratting">
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                            </div>
-                            <p>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur vitae nunc eget leo finibus luctus et vitae lorem.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="review-slider-item">
-                        <div class="review-img">
-                            <img src="{% static 'img/review-2.jpg' %}" alt="Image">
-                        </div>
-                        <div class="review-text">
-                            <h2>Customer Name</h2>
-                            <h3>Profession</h3>
-                            <div class="ratting">
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                            </div>
-                            <p>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur vitae nunc eget leo finibus luctus et vitae lorem.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="review-slider-item">
-                        <div class="review-img">
-                            <img src="{% static 'img/review-3.jpg' %}" alt="Image">
-                        </div>
-                        <div class="review-text">
-                            <h2>Customer Name</h2>
-                            <h3>Profession</h3>
-                            <div class="ratting">
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                            </div>
-                            <p>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur vitae nunc eget leo finibus luctus et vitae lorem.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div> -->
-    <!-- Brand End -->
-        
-{% endblock content %}
+    // Quantity stepper logic
+    $('.quantity-stepper .btn-plus').on('click', function(){
+        var input = $(this).siblings('input');
+        input.val(parseInt(input.val()) + 1);
+    });
+    $('.quantity-stepper .btn-minus').on('click', function(){
+        var input = $(this).siblings('input');
+        var count = parseInt(input.val()) - 1;
+        count = count < 1 ? 1 : count;
+        input.val(count);
+    });
+});
+</script>
+{% endblock %}

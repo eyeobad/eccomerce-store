@@ -1,171 +1,171 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %}E Store - Cart Page{% endblock %}
+{% block title %}Your Shopping Cart - Se_un{% endblock %}
 
 {% block extra_head %}
 <style>
-  /* Mobile-specific styling */
-  @media (max-width: 767px) {
-      /* Adjust table font size for mobile */
-      .cart-page .table-responsive table {
-          font-size: 14px;
-      }
-      /* Center table content */
-      .cart-page .table-responsive table th,
-      .cart-page .table-responsive table td {
-          text-align: center;
-          vertical-align: middle;
-      }
-      /* Make product images smaller */
-      .cart-page .img img {
-          width: 60px;
-          height: auto;
-      }
-      /* Adjust quantity input styling */
-      .cart-page .qty input {
-          width: 70px;
-          padding: 5px;
-          font-size: 14px;
-      }
-      /* Cart buttons: Increase tap area */
-      .cart-btn button,
-      .cart-btn a.btn {
-          font-size: 16px;
-          padding: 10px 20px;
-      }
-      /* Adjust cart summary padding and font size */
-      .cart-summary .cart-content {
-          padding: 15px;
-          font-size: 16px;
-      }
-  }
+    /* ... (Your existing CSS styles remain the same) ... */
+    :root {
+        --card-bg: #fff;
+        --card-radius: 20px;
+        --light-grey: #f7f7f7;
+        --border-color: #f0f0f0;
+        --transition-speed: 0.3s ease;
+    }
+    .page-header h1 { font-size: 2.5rem; font-weight: 800; }
+    .cart-item-card {
+        display: flex; align-items: center; gap: 20px; padding: 20px;
+        background-color: var(--card-bg); border-radius: var(--card-radius);
+        margin-bottom: 20px; border: 1px solid var(--border-color);
+    }
+    .cart-item-card .item-image img {
+        width: 100px; height: 100px; object-fit: cover;
+        border-radius: 12px; background-color: var(--light-grey);
+    }
+    .cart-item-card .item-details { flex-grow: 1; }
+    .cart-item-card .item-details h5 { font-weight: 600; font-size: 1.1rem; margin-bottom: 5px; }
+    .cart-item-card .item-details p { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 10px; }
+    .cart-item-card .item-price { font-weight: 700; font-size: 1.2rem; }
+    .cart-item-card .item-actions { display: flex; align-items: center; gap: 20px; }
+    .cart-item-card .remove-btn { color: #ff3333; font-size: 1.2rem; transition: color var(--transition-speed); }
+    .cart-item-card .remove-btn:hover { color: #cc0000; }
+    .quantity-stepper { display: flex; align-items: center; background-color: var(--light-grey); border-radius: 30px; padding: 5px; }
+    .quantity-stepper button {
+        background-color: #fff; border-radius: 50%; width: 35px; height: 35px;
+        border: 1px solid var(--border-color);
+    }
+    .quantity-stepper input {
+        width: 40px; text-align: center; background: transparent;
+        border: none; font-weight: 600;
+        /* Disable native arrows in some browsers */
+        -moz-appearance: textfield;
+    }
+    .quantity-stepper input::-webkit-outer-spin-button,
+    .quantity-stepper input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+    .order-summary { background-color: var(--light-grey); padding: 30px; border-radius: var(--card-radius); }
+    .order-summary h3 { font-size: 1.5rem; font-weight: 700; margin-bottom: 25px; }
+    .summary-row { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 1rem; }
+    .summary-row.total { font-size: 1.2rem; font-weight: 700; padding-top: 15px; border-top: 1px solid #ddd; }
+    .summary-row .discount { color: #ff3333; }
+    .coupon-form .input-group { border-radius: 8px; overflow: hidden; }
+    .coupon-form .form-control { border: 1px solid var(--border-color); }
+    .coupon-form .btn-apply { background-color: #000; color: #fff; }
+    .btn-checkout {
+        background-color: #000; color: #fff; border-radius: 8px; width: 100%;
+        padding: 15px; font-weight: 600; transition: background-color var(--transition-speed);
+    }
+    .btn-checkout:hover { background-color: #333; color: #fff; }
+
+    @media (max-width: 767px) {
+        .cart-item-card { flex-direction: column; align-items: flex-start; }
+        .cart-item-card .item-actions { width: 100%; justify-content: space-between; }
+    }
 </style>
 {% endblock extra_head %}
 
 {% block content %}
-    <!-- Breadcrumb Start -->
-    {% include 'breadcrumb.html' %}
-    <!-- Breadcrumb End -->
+<div class="container py-5">
+    <div class="page-header mb-5">
+        <p><a href="{% url 'myapp:home' %}">Home</a> / Cart</p>
+        <h1>YOUR CART</h1>
+    </div>
 
-    <!-- Cart Start -->
-    <div class="cart-page">
-        <div class="container-fluid">
-            <div class="row">
-                <!-- Cart Items -->
-                <div class="col-lg-8">
-                    <form method="post" action="{% url 'myapp:update_cart' %}">
-                        {% csrf_token %}
-                        <div class="cart-page-inner">
-                            <div class="table-responsive">
-                                <table class="table table-bordered">
-                                    <thead class="thead-dark">
-                                        <tr>
-                                            <th>Product</th>
-                                            <th>Price</th>
-                                            <th>Quantity</th>
-                                            <th>Total</th>
-                                            <th>Remove</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="align-middle">
-                                        {% if cart_items %}
-                                            {% for item in cart_items %}
-                                            <tr>
-                                                <td>
-                                                    <div class="img">
-                                                        <a href="{% url 'myapp:product_detail' item.product.id %}">
-                                                            {% if item.product.image %}
-                                                                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
-                                                            {% else %}
-                                                                <img src="{% static 'img/default-product.jpg' %}" alt="Default Product">
-                                                            {% endif %}
-                                                        </a>
-                                                        <p>{{ item.product.name }}</p>
-                                                    </div>
-                                                </td>
-                                                <td>₦{{ item.product.price }}</td>
-                                                <td>
-                                                    <!-- Quantity Input with Orange Styling -->
-                                                    <div class="qty" style="background-color: #fff;">
-                                                        <input 
-                                                            type="number" 
-                                                            name="quantity_{{ item.id }}" 
-                                                            value="{{ item.quantity }}" 
-                                                            min="1" 
-                                                            class="orange-qty"
-                                                        >
-                                                    </div>
-                                                </td>
-                                                <td>₦{{ item.total }}</td>
-                                                <td>
-                                                    <a href="{% url 'myapp:remove_from_cart' item.id %}">
-                                                        <i class="fa fa-trash"></i>
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                            {% endfor %}
-                                        {% else %}
-                                            <tr>
-                                                <td colspan="5">Your cart is empty.</td>
-                                            </tr>
-                                        {% endif %}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <!-- Update Cart Button -->
-                        <div class="cart-btn" style="margin-top: 10px;">
-                            <button type="submit" class="btn btn-primary">Update Cart</button>
-                        </div>
-                    </form>
-                </div>
+    <div class="row">
+        <div class="col-lg-8">
+            <form method="post" action="{% url 'myapp:update_cart' %}">
+                {% csrf_token %}
 
-                <!-- Cart Summary and Coupon -->
-                <div class="col-lg-4">
-                    <div class="cart-page-inner">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="coupon">
-                                    {% if cart.coupon %}
-                                        <p>
-                                            Coupon Applied: <strong>{{ cart.coupon.code }}</strong>
-                                            ({{ cart.coupon.discount }}% off)
-                                        </p>
-                                    {% else %}
-                                        <form method="post" action="{% url 'myapp:apply_coupon' %}" id="coupon-form">
-                                            {% csrf_token %}
-                                            <input type="text" name="coupon_code" placeholder="Coupon Code">
-                                            <button type="submit">Apply Code</button>
-                                        </form>
-                                    {% endif %}
-                                </div>
-                            </div>
-                            <div class="col-md-12">
-                                <div class="cart-summary">
-                                    <div class="cart-content">
-                                        <h1>Cart Summary</h1>
-                                        <p>Sub Total<span>₦{{ cart.get_subtotal }}</span></p>
-                                        {% if cart.coupon %}
-                                            <p>Discount<span>-₦{{ cart.get_discount }}</span></p>
-                                        {% endif %}
-                                        <p>Shipping Cost<span>₦{{ shipping_cost }}</span></p>
-                                        <h2>Grand Total<span>₦{{ cart.get_total }}</span></h2>
-                                    </div>
-                                    <div class="cart-btn">
-                                        {% if user.is_authenticated %}
-                                            <a href="{% url 'myapp:checkout' %}" class="btn">Checkout</a>
-                                        {% else %}
-                                            <a href="{% url 'myapp:login' %}?next={{ request.path }}" class="btn btn-warning">Login to Checkout</a>
-                                        {% endif %}
-                                    </div>
-                                </div>
-                            </div>
+                {% for item in cart_items %}
+                <div class="cart-item-card">
+                    <div class="item-image">
+                        <img src="{% if item.product.image %}{{ item.product.image.url }}{% else %}{% static 'img/default-product.jpg' %}{% endif %}" alt="{{ item.product.name }}">
+                    </div>
+                    <div class="item-details">
+                        <h5>{{ item.product.name }}</h5>
+                        <p>Size: Large | Color: White</p>
+                        <div class="item-price">₦{{ item.product.price|floatformat:2 }}</div>
+                    </div>
+                    <div class="item-actions">
+                        <div class="quantity-stepper">
+                            <button type="button" class="btn-minus">-</button>
+                            <input type="number" name="quantity_{{ item.id }}" value="{{ item.quantity }}" min="1">
+                            <button type="button" class="btn-plus">+</button>
                         </div>
+                        <a href="{% url 'myapp:remove_from_cart' item.id %}" class="remove-btn" title="Remove Item">
+                            <i class="fas fa-trash-alt"></i>
+                        </a>
                     </div>
                 </div>
-                <!-- End Cart Summary -->
+                {% empty %}
+                <p>Your cart is currently empty. <a href="{% url 'myapp:products' %}">Continue Shopping</a>.</p>
+                {% endfor %}
+
+                {% if cart_items %}
+                <div class="text-right">
+                    <button type="submit" class="btn btn-dark">Update Cart</button>
+                </div>
+                {% endif %}
+            </form>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="order-summary">
+                <h3>Order Summary</h3>
+                <div class="summary-row">
+                    <span>Subtotal</span>
+                    <span>₦{{ cart_subtotal|floatformat:2 }}</span>
+                </div>
+                <div class="summary-row">
+                    <span>Delivery Fee</span>
+                    <span>₦{{ shipping_cost|floatformat:2 }}</span>
+                </div>
+                {% if cart.coupon %}
+                <div class="summary-row">
+                    <span class="discount">Discount ({{ cart.coupon.discount }}%)</span>
+                    <span class="discount">-₦{{ cart.get_discount|floatformat:2 }}</span>
+                </div>
+                {% endif %}
+                <div class="summary-row total mt-3">
+                    <span>Total</span>
+                    <span>₦{{ grand_total|floatformat:2 }}</span>
+                </div>
+                
+                <form class="coupon-form my-4" method="post" action="{% url 'myapp:apply_coupon' %}">
+                    {% csrf_token %}
+                    <div class="input-group">
+                        <input type="text" name="coupon_code" class="form-control" placeholder="Add promo code">
+                        <div class="input-group-append">
+                            <button class="btn btn-apply" type="submit">Apply</button>
+                        </div>
+                    </div>
+                </form>
+                
+                <a href="{% url 'myapp:checkout' %}" class="btn btn-checkout">
+                    Go to Checkout <i class="fas fa-arrow-right"></i>
+                </a>
             </div>
         </div>
     </div>
-    <!-- Cart End -->
+</div>
 {% endblock content %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    $('.quantity-stepper').on('click', '.btn-plus', function() {
+        var input = $(this).siblings('input[type="number"]');
+        input.val(parseInt(input.val()) + 1);
+    });
+
+    $('.quantity-stepper').on('click', '.btn-minus', function() {
+        var input = $(this).siblings('input[type="number"]');
+        var count = parseInt(input.val()) - 1;
+        count = count < 1 ? 1 : count; // Quantity cannot be less than 1
+        input.val(count);
+    });
+});
+</script>
+{% endblock %}
