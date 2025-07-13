@@ -153,18 +153,21 @@ class NewsletterSubscription(models.Model):
     
 
 class Review(models.Model):
-    reviewer_name = models.CharField(max_length=100, help_text="e.g., Sarah J.")
+    null=True
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='reviews')
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='reviews')
     rating = models.PositiveSmallIntegerField(
         validators=[MinValueValidator(1), MaxValueValidator(5)],
         help_text="Rating from 1 to 5"
     )
     comment = models.TextField()
-    is_verified = models.BooleanField(default=True, help_text="Show a 'verified' checkmark next to the name.")
     is_approved = models.BooleanField(default=True, help_text="Approve the review to make it visible on the site.")
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        ordering = ['-created_at'] # Show newest reviews first
+        ordering = ['-created_at']
+        # Ensure a user can only review a product once
+        unique_together = ('product', 'user')
 
     def __str__(self):
-        return f"Review by {self.reviewer_name} - {self.rating} Stars"
+        return f"Review for {self.product.name} by {self.user.username}"

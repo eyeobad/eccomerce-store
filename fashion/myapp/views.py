@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import update_session_auth_hash
 from django.contrib import messages
 from decimal import Decimal
-from .forms import CustomUserCreationForm, ProfileUpdateForm, ProductForm, AddressForm
+from .forms import CustomUserCreationForm, ProfileUpdateForm, ProductForm, AddressForm,ReviewForm
 from django_countries import countries
 from django.views.decorators.csrf import csrf_protect 
 from .utils import initiate_flutterwave_payment
@@ -73,10 +73,14 @@ def custom_404(request, exception):
 
 def product_detail(request, pk):
     product = get_object_or_404(Product, pk=pk)
+    reviews = product.reviews.filter(is_approved=True) 
     related_products = Product.objects.filter(category=product.category).exclude(pk=pk)[:4]
+    review_form = ReviewForm()
     context = {
         'product': product,
         'related_products': related_products,
+        'reviews': reviews, 
+        'review_form': review_form,
     }
     return render(request, 'product-detail.html', context)
 
@@ -502,3 +506,24 @@ def newsletter_list(request):
         'subscription_count': subscriptions.count(),
     }
     return render(request, 'newsletter_list.html', context)
+
+@login_required
+def add_review(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    if request.method == 'POST':
+        # Check if the user has already reviewed this product
+        if Review.objects.filter(product=product, user=request.user).exists():
+            messages.warning(request, 'You have already submitted a review for this product.')
+            return redirect('myapp:product_detail', pk=product.id)
+
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.product = product
+            review.user = request.user
+            review.save()
+            messages.success(request, 'Your review has been submitted and is pending approval.')
+            return redirect('myapp:product_detail', pk=product.id)
+    
+    # This view only handles POST requests, so we redirect if accessed via GET
+    return redirect('myapp:product_detail', pk=product.id)

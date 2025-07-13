@@ -106,10 +106,18 @@ class NewsletterSubscriptionAdmin(admin.ModelAdmin):
     list_display = ('email', 'date_subscribed')
     search_fields = ('email',)
 
+
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
-    list_display = ('reviewer_name', 'rating', 'is_approved', 'created_at')
-    list_filter = ('is_approved', 'rating', 'is_verified')
+    # CHANGED: 'reviewer_name' is now 'user'
+    list_display = ('user', 'product', 'rating', 'is_approved', 'created_at')
+    
+    # REMOVED: 'is_verified' which no longer exists
+    list_filter = ('is_approved', 'rating')
+    
     list_editable = ('is_approved',)
-    search_fields = ('reviewer_name', 'comment')
+    
+    # CHANGED: Search by the user's username instead of the old field
+    search_fields = ('user__username', 'product__name', 'comment')
+    
     date_hierarchy = 'created_at'

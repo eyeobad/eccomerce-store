@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import get_user_model
-from .models import Product, CustomUser
+from .models import Product, CustomUser,Review
 
 User = get_user_model()
 
@@ -48,3 +48,18 @@ class AddressForm(forms.ModelForm):
     class Meta:
         model = CustomUser
         fields = ['address', 'city', 'state', 'country', 'zip_code']
+
+class ReviewForm(forms.ModelForm):
+    class Meta:
+        model = Review
+        # The user only needs to submit a rating and a comment
+        fields = ['rating', 'comment']
+        widgets = {
+            'rating': forms.RadioSelect(
+                choices=[('1', '1'), ('2', '2'), ('3', '3'), ('4', '4'), ('5', '5')],
+                attrs={'class': 'star-rating'} # Optional class for styling
+            ),
+            'comment': forms.Textarea(
+                attrs={'rows': 4, 'placeholder': 'Write your review here...'}
+            ),
+        }
