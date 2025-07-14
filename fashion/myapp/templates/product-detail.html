@@ -73,6 +73,11 @@
   .star-wrapper:hover ~ .star-wrapper i {
     color: #ffc633;
   }
+  /* Add to cart feedback */
+  #add-to-cart-text { display: inline-block; }
+  #added-to-cart-text { display: none; }
+  .add-to-cart-btn.added #add-to-cart-text { display: none; }
+  .add-to-cart-btn.added #added-to-cart-text { display: inline-block; }
 </style>
 {% endblock extra_head %}
 
@@ -124,34 +129,45 @@
           <hr>
 
           <!-- Variants -->
-          <div class="variant-group">
-            <h4>Select Colors</h4>
-            <div class="color-swatches">
-              <div class="color-swatch active" style="background-color: #3a4855;"></div>
-              <div class="color-swatch" style="background-color: #c3a184;"></div>
-            </div>
-          </div>
-          <div class="variant-group">
-            <h4>Choose Size</h4>
-            <div class="size-swatches">
-              <div class="size-swatch">S</div>
-              <div class="size-swatch active">M</div>
-              <div class="size-swatch">L</div>
-              <div class="size-swatch">XL</div>
-            </div>
-          </div>
-          <hr>
-
-          <!-- Add to Cart Form -->
-          <form method="post" action="{% url 'myapp:add_to_cart' product.id %}">
+          <form method="post" action="{% url 'myapp:add_to_cart' product.id %}" id="add-to-cart-form">
             {% csrf_token %}
+            <div class="variant-group">
+              <h4>Select Colors</h4>
+              <div class="color-swatches">
+                {% for color in product.colors.all %}
+                <div class="color-swatch {% if forloop.first %}active{% endif %}" 
+                     data-color="{{ color.id }}"
+                     style="background-color: {{ color.hex_code }};"></div>
+                {% endfor %}
+              </div>
+              <input type="hidden" name="color" id="selectedColor" value="{{ product.colors.first.id }}">
+            </div>
+            
+            <div class="variant-group">
+              <h4>Choose Size</h4>
+              <div class="size-swatches">
+                {% for size in product.sizes.all %}
+                <div class="size-swatch {% if forloop.first %}active{% endif %}" 
+                     data-size="{{ size.id }}">{{ size.name }}</div>
+                {% endfor %}
+              </div>
+              <input type="hidden" name="size" id="selectedSize" value="{{ product.sizes.first.id }}">
+            </div>
+            <hr>
+
+            <!-- Add to Cart Form -->
             <div class="d-flex align-items-center gap-3 mt-4">
               <div class="quantity-stepper">
                 <button type="button" class="btn btn-minus">-</button>
-                <input type="number" name="quantity" value="1" min="1" readonly>
+                <input type="number" name="quantity" value="1" min="1" id="quantityInput">
                 <button type="button" class="btn btn-plus">+</button>
               </div>
-              <button type="submit" class="btn add-to-cart-btn">Add To Cart</button>
+              <button type="submit" class="btn add-to-cart-btn">
+                <span id="add-to-cart-text">Add To Cart</span>
+                <span id="added-to-cart-text">
+                  <i class="fas fa-check"></i> Added!
+                </span>
+              </button>
             </div>
           </form>
         </div>
@@ -245,6 +261,7 @@
 {% endblock %}
 
 {% block extra_js %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
   // Image gallery logic
   $('.product-thumbnails .thumb').on('click', function(){
@@ -255,12 +272,27 @@
 
   // Quantity stepper logic
   $('.quantity-stepper .btn-plus').click(function(){
-    let inp = $(this).siblings('input[name="quantity"]');
-    inp.val(+inp.val()+1);
+    let inp = $('#quantityInput');
+    inp.val(parseInt(inp.val()) + 1);
   });
+  
   $('.quantity-stepper .btn-minus').click(function(){
-    let inp = $(this).siblings('input[name="quantity"]');
-    let v = +inp.val()-1; inp.val(v>0?v:1);
+    let inp = $('#quantityInput');
+    let newVal = parseInt(inp.val()) - 1;
+    inp.val(newVal > 1 ? newVal : 1);
+  });
+
+  // Variant selection
+  $('.color-swatch').click(function(){
+    $('.color-swatch').removeClass('active');
+    $(this).addClass('active');
+    $('#selectedColor').val($(this).data('color'));
+  });
+
+  $('.size-swatch').click(function(){
+    $('.size-swatch').removeClass('active');
+    $(this).addClass('active');
+    $('#selectedSize').val($(this).data('size'));
   });
 
   // Initialize star rating colors
@@ -324,6 +356,37 @@
         $(this).find('i').css('color', '#ffc633');
       } else {
         $(this).find('i').css('color', '#ddd');
+      }
+    });
+  });
+
+  // AJAX add to cart with visual feedback
+  $('#add-to-cart-form').submit(function(e) {
+    e.preventDefault();
+    const form = $(this);
+    const submitBtn = form.find('.add-to-cart-btn');
+    
+    // Disable button during request
+    submitBtn.prop('disabled', true).addClass('added');
+    
+    $.ajax({
+      type: "POST",
+      url: form.attr('action'),
+      data: form.serialize(),
+      success: function(response) {
+        // Update cart count in navbar
+        if (response.cart_item_count !== undefined) {
+          $('.cart-count').text(response.cart_item_count);
+        }
+        
+        // Revert button after 2 seconds
+        setTimeout(function() {
+          submitBtn.prop('disabled', false).removeClass('added');
+        }, 2000);
+      },
+      error: function(xhr) {
+        alert('Error adding item to cart: ' + (xhr.responseJSON?.error || 'Please try again'));
+        submitBtn.prop('disabled', false).removeClass('added');
       }
     });
   });
