@@ -6,184 +6,331 @@
 
 {% block extra_head %}
 <style>
-    /* === Product Detail Page Styles === */
-    .product-detail-section { padding: 60px 0; background-color: #fff; }
-    .product-gallery .main-image img { width: 100%; border-radius: 12px; background-color: #f7f7f7; }
-    .product-thumbnails { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 15px; }
-    .product-thumbnails .thumb img { width: 100%; border-radius: 8px; border: 2px solid transparent; cursor: pointer; transition: border-color 0.3s ease; background-color: #f7f7f7; }
-    .product-thumbnails .thumb.active img, .product-thumbnails .thumb:hover img { border-color: #000; }
-    .product-info h1 { font-size: 2.5rem; font-weight: 700; }
-    .product-info .rating-summary { display: flex; align-items: center; gap: 10px; margin: 15px 0; color: #ffc633; }
-    .product-info .price { font-size: 2rem; font-weight: 700; margin: 20px 0; }
-    .product-info .price .original-price { font-size: 1.2rem; color: #aaa; text-decoration: line-through; margin-left: 15px; }
-    .product-info .short-description { color: var(--text-secondary); line-height: 1.7; font-size: 0.95rem; }
-    .variant-group { margin-top: 25px; }
-    .variant-group h4 { font-size: 1.1rem; font-weight: 600; margin-bottom: 10px; }
-    .color-swatches, .size-swatches { display: flex; gap: 10px; flex-wrap: wrap; }
-    .color-swatch { width: 35px; height: 35px; border-radius: 50%; cursor: pointer; border: 2px solid #fff; box-shadow: 0 0 0 1px #ddd; transition: box-shadow 0.3s ease; }
-    .color-swatch.active, .color-swatch:hover { box-shadow: 0 0 0 2px #000; }
-    .size-swatch { background-color: #f0f0f0; padding: 8px 18px; border-radius: 30px; cursor: pointer; font-weight: 500; transition: all 0.3s ease; border: 1px solid transparent; }
-    .size-swatch.active, .size-swatch:hover { background-color: #000; color: #fff; }
-    .quantity-stepper { display: flex; align-items: center; background-color: #f0f0f0; border-radius: 30px; padding: 5px; width: fit-content; }
-    .quantity-stepper .btn { background-color: #fff; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; }
-    .quantity-stepper input { width: 50px; text-align: center; background: transparent; border: none; font-weight: 600; }
-    .add-to-cart-btn { background-color: #000; color: #fff; border-radius: 30px; padding: 15px 40px; font-weight: 600; transition: background-color 0.3s ease; flex-grow: 1; text-align: center; border: none; }
-    .add-to-cart-btn:hover { background-color: #333; color: #fff; }
-    .product-details-tabs { padding: 80px 0; border-top: 1px solid #eee; margin-top: 60px; }
-    .product-details-tabs .nav-pills { border-bottom: 1px solid #eee; }
-    .product-details-tabs .nav-pills .nav-link { color: #888; font-weight: 600; font-size: 1.1rem; padding: 10px 25px; border-radius: 0; border-bottom: 3px solid transparent; margin-bottom: -2px; }
-    .product-details-tabs .nav-pills .nav-link.active { color: #000; background-color: transparent; border-bottom-color: #000; }
-    .tab-content { padding-top: 40px; }
-    .review-card-item { border-bottom: 1px solid #eee; padding: 25px 0; }
-    .star-rating-form { display: inline-flex; flex-direction: row-reverse; justify-content: flex-end; }
-    .star-rating-form input[type="radio"] { display: none; }
-    .star-rating-form label { font-size: 1.8rem; color: #ddd; cursor: pointer; padding: 0 3px; transition: color 0.2s ease; }
-    .star-rating-form input[type="radio"]:checked ~ label, .star-rating-form label:hover, .star-rating-form label:hover ~ label { color: #ffc633; }
-    .add-review-form h4 { font-weight: 600; margin-bottom: 20px; }
-    .add-review-form .form-control { border-radius: 8px; border: 1px solid #ddd; padding: 15px; }
-    .add-review-form .form-control:focus { border-color: #000; box-shadow: 0 0 0 2px rgba(0,0,0,0.1); }
+  .product-detail-section { padding: 60px 0; background-color: #fff; }
+  .product-gallery .main-image img { width: 100%; border-radius: 12px; background-color: #f7f7f7; }
+  .product-thumbnails { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 15px; }
+  .product-thumbnails .thumb img { width: 100%; border-radius: 8px; border: 2px solid transparent; cursor: pointer; transition: border-color 0.3s ease; background-color: #f7f7f7; }
+  .product-thumbnails .thumb.active img, .product-thumbnails .thumb:hover img { border-color: #000; }
+  .product-info h1 { font-size: 2.5rem; font-weight: 700; }
+  .product-info .rating-summary { display: flex; align-items: center; gap: 10px; margin: 15px 0; color: #ffc633; }
+  .product-info .price { font-size: 2rem; font-weight: 700; margin: 20px 0; }
+  .product-info .price .original-price { font-size: 1.2rem; color: #aaa; text-decoration: line-through; margin-left: 15px; }
+  .product-info .short-description { color: var(--text-secondary); line-height: 1.7; font-size: 0.95rem; }
+  .variant-group { margin-top: 25px; }
+  .variant-group h4 { font-size: 1.1rem; font-weight: 600; margin-bottom: 10px; }
+  .color-swatches, .size-swatches { display: flex; gap: 10px; flex-wrap: wrap; }
+  .color-swatch { width: 35px; height: 35px; border-radius: 50%; cursor: pointer; border: 2px solid #fff; box-shadow: 0 0 0 1px #ddd; transition: box-shadow 0.3s ease; }
+  .color-swatch.active, .color-swatch:hover { box-shadow: 0 0 0 2px #000; }
+  .size-swatch { background-color: #f0f0f0; padding: 8px 18px; border-radius: 30px; cursor: pointer; font-weight: 500; transition: all 0.3s ease; border: 1px solid transparent; }
+  .size-swatch.active, .size-swatch:hover { background-color: #000; color: #fff; }
+  .quantity-stepper { display: flex; align-items: center; background-color: #f0f0f0; border-radius: 30px; padding: 5px; width: fit-content; }
+  .quantity-stepper .btn { background-color: #fff; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; }
+  .quantity-stepper input { width: 50px; text-align: center; background: transparent; border: none; font-weight: 600; }
+  .add-to-cart-btn { background-color: #000; color: #fff; border-radius: 30px; padding: 15px 40px; font-weight: 600; transition: background-color 0.3s ease; flex-grow: 1; text-align: center; border: none; }
+  .add-to-cart-btn:hover { background-color: #333; color: #fff; }
+  .product-details-tabs { padding: 80px 0; border-top: 1px solid #eee; margin-top: 60px; }
+  .product-details-tabs .nav-pills { border-bottom: 1px solid #eee; }
+  .product-details-tabs .nav-pills .nav-link { color: #888; font-weight: 600; font-size: 1.1rem; padding: 10px 25px; border-radius: 0; border-bottom: 3px solid transparent; margin-bottom: -2px; }
+  .product-details-tabs .nav-pills .nav-link.active { color: #000; background-color: transparent; border-bottom-color: #000; }
+  .tab-content { padding-top: 40px; }
+  .review-card-item { border-bottom: 1px solid #eee; padding: 25px 0; }
+  .add-review-form h4 { font-weight: 600; margin-bottom: 20px; }
+  .add-review-form .form-control { border-radius: 8px; border: 1px solid #ddd; padding: 15px; }
+  .add-review-form .form-control:focus { border-color: #000; box-shadow: 0 0 0 2px rgba(0,0,0,0.1); }
+
+  /* === Fixed Star Rating Styles === */
+  .star-rating-form {
+    display: inline-flex;
+  }
+  .star-wrapper {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    padding: 0 3px;
+  }
+  .star-wrapper input[type="radio"] {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    margin: 0; opacity: 0; z-index: 2;
+    cursor: pointer;
+  }
+  .star-wrapper i {
+    pointer-events: none;
+    font-size: 1.8rem;
+    color: #ddd;
+    transition: color 0.2s ease;
+  }
+  
+  /* Highlight current and previous stars when selected */
+  .star-wrapper input:checked + i,
+  .star-wrapper input:checked ~ .star-wrapper i {
+    color: #ffc633;
+  }
+  
+  /* Highlight current and previous stars on hover */
+  .star-wrapper:hover i,
+  .star-wrapper:hover ~ .star-wrapper i {
+    color: #ffc633;
+  }
 </style>
 {% endblock extra_head %}
 
 {% block content %}
 <div class="product-detail-section">
-    <div class="container">
-        <div class="row">
-            <!-- Product Image Gallery (Left Column) -->
-            <div class="col-lg-6">
-                <div class="product-gallery">
-                    <div class="main-image mb-3">
-                        <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'img/default-product.jpg' %}{% endif %}" alt="{{ product.name }}" id="mainProductImage">
-                    </div>
-                    <div class="product-thumbnails">
-                        <div class="thumb active"><img src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'img/default-product.jpg' %}{% endif %}" alt="Thumbnail 1"></div>
-                    </div>
-                </div>
+  <div class="container">
+    <div class="row">
+      <!-- Left Gallery -->
+      <div class="col-lg-6">
+        <div class="product-gallery">
+          <div class="main-image mb-3">
+            <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'img/default-product.jpg' %}{% endif %}"
+                 alt="{{ product.name }}" id="mainProductImage">
+          </div>
+          <div class="product-thumbnails">
+            <div class="thumb active">
+              <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'img/default-product.jpg' %}{% endif %}"
+                   alt="Thumbnail">
             </div>
-
-            <!-- Product Info (Right Column) -->
-            <div class="col-lg-6">
-                <div class="product-info">
-                    <h1>{{ product.name }}</h1>
-                    <div class="rating-summary">
-                        <div class="stars">
-                            {% with rating=product.average_rating|default:4 %}
-                            {% for i in "12345"|make_list %}{% if forloop.counter <= rating %}<i class="fa fa-star"></i>{% else %}<i class="far fa-star text-muted"></i>{% endif %}{% endfor %}
-                            {% endwith %}
-                        </div>
-                        <span>({{ reviews.count }})</span>
-                    </div>
-                    <div class="price">
-                        ₦{{ product.price|floatformat:2 }}
-                        <span class="original-price"><del>₦{{ product.price|add:1000|floatformat:2 }}</del></span>
-                    </div>
-                    <p class="short-description">{{ product.description|truncatewords:25 }}</p>
-                    <hr>
-                    <div class="variant-group">
-                        <h4>Select Colors</h4>
-                        <div class="color-swatches"><div class="color-swatch active" style="background-color: #3a4855;"></div><div class="color-swatch" style="background-color: #c3a184;"></div></div>
-                    </div>
-                    <div class="variant-group">
-                        <h4>Choose Size</h4>
-                        <div class="size-swatches"><div class="size-swatch">S</div><div class="size-swatch active">M</div><div class="size-swatch">L</div><div class="size-swatch">XL</div></div>
-                    </div>
-                    <hr>
-                    
-                    <!-- This form now links the quantity buttons to the backend -->
-                    <form method="post" action="{% url 'myapp:add_to_cart' product.id %}">
-                        {% csrf_token %}
-                        <div class="d-flex align-items-center gap-3 mt-4">
-                            <div class="quantity-stepper">
-                                <button type="button" class="btn btn-minus">-</button>
-                                <input type="number" name="quantity" value="1" min="1" readonly>
-                                <button type="button" class="btn btn-plus">+</button>
-                            </div>
-                            <button type="submit" class="btn add-to-cart-btn">Add To Cart</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
+          </div>
         </div>
+      </div>
+
+      <!-- Right Info & Cart -->
+      <div class="col-lg-6">
+        <div class="product-info">
+          <h1>{{ product.name }}</h1>
+          <div class="rating-summary">
+            <div class="stars">
+              {% with rating=product.average_rating|default:4 %}
+                {% for i in "12345"|make_list %}
+                  {% if forloop.counter <= rating %}
+                    <i class="fa fa-star"></i>
+                  {% else %}
+                    <i class="far fa-star text-muted"></i>
+                  {% endif %}
+                {% endfor %}
+              {% endwith %}
+            </div>
+            <span>({{ reviews.count }})</span>
+          </div>
+          <div class="price">
+            ₦{{ product.price|floatformat:2 }}
+            <span class="original-price">
+              <del>₦{{ product.price|add:1000|floatformat:2 }}</del>
+            </span>
+          </div>
+          <p class="short-description">{{ product.description|truncatewords:25 }}</p>
+          <hr>
+
+          <!-- Variants -->
+          <div class="variant-group">
+            <h4>Select Colors</h4>
+            <div class="color-swatches">
+              <div class="color-swatch active" style="background-color: #3a4855;"></div>
+              <div class="color-swatch" style="background-color: #c3a184;"></div>
+            </div>
+          </div>
+          <div class="variant-group">
+            <h4>Choose Size</h4>
+            <div class="size-swatches">
+              <div class="size-swatch">S</div>
+              <div class="size-swatch active">M</div>
+              <div class="size-swatch">L</div>
+              <div class="size-swatch">XL</div>
+            </div>
+          </div>
+          <hr>
+
+          <!-- Add to Cart Form -->
+          <form method="post" action="{% url 'myapp:add_to_cart' product.id %}">
+            {% csrf_token %}
+            <div class="d-flex align-items-center gap-3 mt-4">
+              <div class="quantity-stepper">
+                <button type="button" class="btn btn-minus">-</button>
+                <input type="number" name="quantity" value="1" min="1" readonly>
+                <button type="button" class="btn btn-plus">+</button>
+              </div>
+              <button type="submit" class="btn add-to-cart-btn">Add To Cart</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
     </div>
+  </div>
 </div>
 
-<!-- Tabbed Interface for Details & Reviews -->
+<!-- Details & Reviews -->
 <div class="product-details-tabs">
-    <div class="container">
-        <ul class="nav nav-pills justify-content-center mb-5">
-            <li class="nav-item"><a class="nav-link active" data-toggle="pill" href="#details-tab">Product Details</a></li>
-            <li class="nav-item"><a class="nav-link" data-toggle="pill" href="#reviews-tab">Product Reviews ({{ reviews.count }})</a></li>
-        </ul>
-        <div class="tab-content">
-            <div id="details-tab" class="container tab-pane active"><br>
-                <p>{{ product.description }}</p>
-            </div>
-            <div id="reviews-tab" class="container tab-pane fade"><br>
-                {% for review in reviews %}
-                    <div class="review-card-item">
-                        <div class="d-flex justify-content-between">
-                            <strong>{{ review.user.username }}</strong>
-                            <div class="stars">{% for i in "12345"|make_list %}{% if forloop.counter <= review.rating %}<i class="fa fa-star text-warning"></i>{% else %}<i class="far fa-star text-muted"></i>{% endif %}{% endfor %}</div>
-                        </div>
-                        <small class="text-muted">{{ review.created_at|date:"F d, Y" }}</small>
-                        <p class="mt-2">"{{ review.comment }}"</p>
-                    </div>
-                {% empty %}
-                    <p class="text-center">There are no reviews yet. Be the first!</p>
+  <div class="container">
+    <ul class="nav nav-pills justify-content-center mb-5">
+      <li class="nav-item"><a class="nav-link active" data-toggle="pill" href="#details-tab">Product Details</a></li>
+      <li class="nav-item"><a class="nav-link" data-toggle="pill" href="#reviews-tab">Product Reviews ({{ reviews.count }})</a></li>
+    </ul>
+
+    <div class="tab-content">
+      <div id="details-tab" class="container tab-pane active"><br>
+        <p>{{ product.description }}</p>
+      </div>
+      <div id="reviews-tab" class="container tab-pane fade"><br>
+        {% for review in reviews %}
+          <div class="review-card-item">
+            <div class="d-flex justify-content-between">
+              <strong>{{ review.user.username }}</strong>
+              <div class="stars">
+                {% for i in "12345"|make_list %}
+                  {% if forloop.counter <= review.rating %}
+                    <i class="fa fa-star text-warning"></i>
+                  {% else %}
+                    <i class="far fa-star text-muted"></i>
+                  {% endif %}
                 {% endfor %}
-                
-                {% if user.is_authenticated %}
-                    <div class="add-review-form mt-5">
-                        <h4 class="mb-4">Write a Review</h4>
-                        <form action="{% url 'myapp:add_review' product.id %}" method="post">
-                            {% csrf_token %}
-                            <div class="form-group">
-                                <label class="mb-2">Your Rating</label>
-                                <div class="star-rating-form">
-                                    {% for radio in review_form.rating %}
-                                        <input type="radio" name="{{ radio.name }}" id="id_rating_{{ radio.choice_value }}" value="{{ radio.choice_value }}" required>
-                                        <label for="id_rating_{{ radio.choice_value }}"><i class="fas fa-star"></i></label>
-                                    {% endfor %}
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="id_comment">Your Comment</label>
-                                {{ review_form.comment|add_class:"form-control"|attr:"rows:4"|attr:"placeholder:Write your review here..." }}
-                            </div>
-                            <button type="submit" class="btn btn-dark mt-3 px-4 py-2">Submit Review</button>
-                        </form>
-                    </div>
-                {% else %}
-                    <p class="mt-4 text-center"><a href="{% url 'myapp:login' %}?next={{ request.path }}">Log in</a> to write a review.</p>
-                {% endif %}
+              </div>
             </div>
-        </div>
+            <small class="text-muted">{{ review.created_at|date:"F d, Y" }}</small>
+            <p class="mt-2">"{{ review.comment }}"</p>
+          </div>
+        {% empty %}
+          <p class="text-center">There are no reviews yet. Be the first!</p>
+        {% endfor %}
+
+        {% if user.is_authenticated %}
+          <div class="add-review-form mt-5">
+            <h4 class="mb-4">Write a Review</h4>
+            <form action="{% url 'myapp:product_detail' product.id %}" method="post">
+              {% csrf_token %}
+              <div class="form-group">
+                <label class="mb-2">Your Rating</label>
+                <div class="star-rating-form">
+                  <!-- Fixed: Stars in reverse order for proper CSS sibling selector -->
+                  {% for val,label in review_form.fields.rating.choices reversed %}
+                    <label class="star-wrapper" title="{{ val }} stars">
+                      <input
+                        type="radio"
+                        name="{{ review_form.rating.name }}"
+                        value="{{ val }}"
+                        required
+                        {% if review_form.rating.value|stringformat:"s" == val|stringformat:"s" %}checked{% endif %}
+                      />
+                      <i class="fas fa-star"></i>
+                    </label>
+                  {% endfor %}
+                  {% for error in review_form.rating.errors %}
+                    <div class="invalid-feedback d-block">{{ error }}</div>
+                  {% endfor %}
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="id_comment">Your Comment</label>
+                {{ review_form.comment|add_class:"form-control"|attr:"rows:4"|attr:"placeholder:Write your review here..." }}
+                {% for error in review_form.comment.errors %}
+                  <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+
+              <button type="submit" name="submit_review" class="btn btn-dark mt-3 px-4 py-2">Submit Review</button>
+            </form>
+          </div>
+        {% else %}
+          <p class="mt-4 text-center">
+            <a href="{% url 'myapp:login' %}?next={{ request.path }}">Log in</a> to write a review.
+          </p>
+        {% endif %}
+      </div>
     </div>
+  </div>
 </div>
 {% endblock %}
 
 {% block extra_js %}
 <script>
-$(document).ready(function(){
-    // Image gallery logic
-    $('.product-thumbnails .thumb').on('click', function(){
-        $('.product-thumbnails .thumb').removeClass('active');
-        $(this).addClass('active');
-        var newImageSrc = $(this).find('img').attr('src');
-        $('#mainProductImage').attr('src', newImageSrc);
-    });
+  // Image gallery logic
+  $('.product-thumbnails .thumb').on('click', function(){
+    $('.product-thumbnails .thumb').removeClass('active');
+    $(this).addClass('active');
+    $('#mainProductImage').attr('src', $(this).find('img').attr('src'));
+  });
 
-    // Quantity stepper logic
-    $('.quantity-stepper .btn-plus').on('click', function(){
-        var input = $(this).siblings('input[name="quantity"]');
-        input.val(parseInt(input.val()) + 1);
+  // Quantity stepper logic
+  $('.quantity-stepper .btn-plus').click(function(){
+    let inp = $(this).siblings('input[name="quantity"]');
+    inp.val(+inp.val()+1);
+  });
+  $('.quantity-stepper .btn-minus').click(function(){
+    let inp = $(this).siblings('input[name="quantity"]');
+    let v = +inp.val()-1; inp.val(v>0?v:1);
+  });
+
+  // Initialize star rating colors
+  function initializeStarColors() {
+    $('.star-rating-form').each(function() {
+      const $form = $(this);
+      const checkedValue = $form.find('input[type="radio"]:checked').val();
+      if (checkedValue) {
+        $form.find('.star-wrapper').each(function() {
+          const starValue = $(this).find('input').val();
+          if (starValue <= checkedValue) {
+            $(this).find('i').css('color', '#ffc633');
+          }
+        });
+      }
     });
-    $('.quantity-stepper .btn-minus').on('click', function(){
-        var input = $(this).siblings('input[name="quantity"]');
-        var count = parseInt(input.val()) - 1;
-        count = count < 1 ? 1 : count;
-        input.val(count);
+  }
+
+  // Handle star hover effects
+  $('.star-wrapper').on('mouseenter', function() {
+    const $form = $(this).closest('.star-rating-form');
+    const hoverValue = $(this).find('input').val();
+    
+    $form.find('.star-wrapper').each(function() {
+      const starValue = $(this).find('input').val();
+      if (starValue <= hoverValue) {
+        $(this).find('i').css('color', '#ffc633');
+      } else {
+        $(this).find('i').css('color', '#ddd');
+      }
     });
-});
+  });
+
+  // Handle mouse leave to restore original state
+  $('.star-rating-form').on('mouseleave', function() {
+    const $form = $(this);
+    const checkedValue = $form.find('input[type="radio"]:checked').val();
+    
+    if (checkedValue) {
+      $form.find('.star-wrapper').each(function() {
+        const starValue = $(this).find('input').val();
+        if (starValue <= checkedValue) {
+          $(this).find('i').css('color', '#ffc633');
+        } else {
+          $(this).find('i').css('color', '#ddd');
+        }
+      });
+    } else {
+      $form.find('i').css('color', '#ddd');
+    }
+  });
+
+  // Handle click to set rating
+  $('.star-wrapper input').on('change', function() {
+    const $form = $(this).closest('.star-rating-form');
+    const selectedValue = $(this).val();
+    
+    $form.find('.star-wrapper').each(function() {
+      const starValue = $(this).find('input').val();
+      if (starValue <= selectedValue) {
+        $(this).find('i').css('color', '#ffc633');
+      } else {
+        $(this).find('i').css('color', '#ddd');
+      }
+    });
+  });
+
+  // Initialize on page load
+  $(document).ready(function() {
+    initializeStarColors();
+  });
 </script>
 {% endblock %}

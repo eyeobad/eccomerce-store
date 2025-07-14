@@ -153,7 +153,6 @@ class NewsletterSubscription(models.Model):
     
 
 class Review(models.Model):
-    null=True
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='reviews')
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='reviews')
     rating = models.PositiveSmallIntegerField(
@@ -166,7 +165,6 @@ class Review(models.Model):
 
     class Meta:
         ordering = ['-created_at']
-        # Ensure a user can only review a product once
         unique_together = ('product', 'user')
 
     def __str__(self):

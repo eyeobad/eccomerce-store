@@ -51,15 +51,18 @@ class AddressForm(forms.ModelForm):
         fields = ['address', 'city', 'state', 'country', 'zip_code','first_name', 'last_name', ]
 
 class ReviewForm(forms.ModelForm):
+    rating = forms.TypedChoiceField(
+        label="Your Rating",
+        choices=[(1, '1'), (2, '2'), (3, '3'), (4, '4'), (5, '5')],
+        coerce=int,  # This correctly converts the form's string value to an integer.
+        widget=forms.RadioSelect,
+        required=True
+    )
+
     class Meta:
         model = Review
-        # The user only needs to submit a rating and a comment
         fields = ['rating', 'comment']
         widgets = {
-            'rating': forms.RadioSelect(
-                choices=[('1', '1'), ('2', '2'), ('3', '3'), ('4', '4'), ('5', '5')],
-                attrs={'class': 'star-rating'} # Optional class for styling
-            ),
             'comment': forms.Textarea(
                 attrs={'rows': 4, 'placeholder': 'Write your review here...'}
             ),

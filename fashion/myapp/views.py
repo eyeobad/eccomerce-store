@@ -71,19 +71,39 @@ def cart(request):
 def custom_404(request, exception):
     return render(request, '404.html', status=404)
 
+
 def product_detail(request, pk):
     product = get_object_or_404(Product, pk=pk)
-    reviews = product.reviews.filter(is_approved=True) 
-    related_products = Product.objects.filter(category=product.category).exclude(pk=pk)[:4]
+    reviews = product.reviews.filter(is_approved=True)
     review_form = ReviewForm()
+
+    if request.method == 'POST':
+        if 'submit_review' in request.POST:
+            if not request.user.is_authenticated:
+                messages.error(request, 'You must be logged in to post a review.')
+                return redirect('users:login') # UPDATE 'users:login' TO YOUR ACTUAL LOGIN URL NAME
+
+            review_form = ReviewForm(request.POST)
+            if review_form.is_valid():
+                if Review.objects.filter(product=product, user=request.user).exists():
+                    messages.warning(request, 'You have already reviewed this product.')
+                else:
+                    review = review_form.save(commit=False)
+                    review.product = product
+                    review.user = request.user
+                    review.save()
+                    messages.success(request, 'Thank you! Your review has been submitted.')
+                    return redirect('myapp:product_detail', pk=pk)
+            else:
+                # THIS IS THE IMPORTANT DEBUGGING LINE
+                print("Form validation failed. Errors:", review_form.errors.as_json())
+
     context = {
         'product': product,
-        'related_products': related_products,
-        'reviews': reviews, 
+        'reviews': reviews,
         'review_form': review_form,
     }
     return render(request, 'product-detail.html', context)
-
 def wishlist(request):
     return render(request, 'wishlist.html')
 
@@ -507,23 +527,3 @@ def newsletter_list(request):
     }
     return render(request, 'newsletter_list.html', context)
 
-@login_required
-def add_review(request, product_id):
-    product = get_object_or_404(Product, id=product_id)
-    if request.method == 'POST':
-        # Check if the user has already reviewed this product
-        if Review.objects.filter(product=product, user=request.user).exists():
-            messages.warning(request, 'You have already submitted a review for this product.')
-            return redirect('myapp:product_detail', pk=product.id)
-
-        form = ReviewForm(request.POST)
-        if form.is_valid():
-            review = form.save(commit=False)
-            review.product = product
-            review.user = request.user
-            review.save()
-            messages.success(request, 'Your review has been submitted and is pending approval.')
-            return redirect('myapp:product_detail', pk=product.id)
-    
-    # This view only handles POST requests, so we redirect if accessed via GET
-    return redirect('myapp:product_detail', pk=product.id)
